@@ -34,5 +34,19 @@ while window.open:
           else: discard
 
     window.clear color(0, 0, 0)
-    window.draw particle_sprite
+
+    particle.update
+
+
+    if particle.life.IsAlive:
+      echo particle.life.Age
+      particle_sprite.color= color(255, 255, 255, particle_sprite.color.a - uint8((255 / particle.life.Ttl)))
+      window.draw particle_sprite
+    else:
+      particle.life.IsAlive = true
+      particle.life.Age = 0
+      particle_sprite.position = vec2(particle.physics.location.x, particle.physics.location.y)
+      particle_sprite.color = color(0,0,0,255)
+
+
     window.display()

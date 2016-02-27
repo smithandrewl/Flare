@@ -45,41 +45,17 @@ discard """
         draw()
         update()
 """
-type
-  Particle* = ref object of RootObj
-    physics*: Physics
-    #tint:  Color
-    #life: life
-
-
-proc draw*(particle: Particle) = discard
-proc update*(particle: Particle) = discard
-proc newParticle*(x: float; y: float): Particle =
-  var
-    particle: Particle = new(Particle)
-
-  particle.physics = newPhysics(x, y)
-
-  result = particle
-
-
-discard """
-ParticlePool
-  constructror(number)
-  obtain
-  release
-"""
 
 type
   Life* = ref object of RootObj
-    IsAlive: bool
-    Age:     int
-    Ttl:     int
+    IsAlive*: bool
+    Age*:     int
+    Ttl*:     int
 
 
 proc update*(life: Life) =
   if life.IsAlive:
-    if life.Age > life.Ttl:
+    if life.Age >= life.Ttl:
       life.IsAlive = false
     else:
       life.Age = life.Age + 1
@@ -92,6 +68,35 @@ proc newLife*(alive: bool; ttl: int): Life =
   life.Ttl     = ttl
 
   result = life
+
+
+type
+  Particle* = ref object of RootObj
+    physics*: Physics
+    #tint:  Color
+    life*: Life
+
+
+proc draw*(particle: Particle) = discard
+proc update*(particle: Particle) =
+  particle.life.update
+
+proc newParticle*(x: float; y: float): Particle =
+  var
+    particle: Particle = new(Particle)
+
+  particle.physics = newPhysics(x, y)
+  particle.life = newLife(true, 255)
+  result = particle
+
+
+discard """
+ParticlePool
+  constructror(number)
+  obtain
+  release
+"""
+
 
 ######### Util ###########
 
