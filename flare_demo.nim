@@ -1,5 +1,6 @@
 import csfml
 import flare
+import mersenne
 
 const
   WINDOW_TITLE  = "Flare"
@@ -7,15 +8,14 @@ const
   WINDOW_HEIGHT = 600
 
 var window = new_RenderWindow(video_mode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE)
-var particle = newParticle(50.0, 50.0)
+var renderState = renderStates(BlendAdd)
+var twister =  newMersenneTwister(1)
 
-let particle_texture = new_Texture("resources/1.png")
-let particle_sprite = new_Sprite(particle_texture)
-let size = particle_texture.size
+var particles: seq[Particle] = @[]
 
-particle_sprite.origin = vec2(size.x/2, size.y/2)
-particle_sprite.scale=vec2(0.05, 0.05)
-particle_sprite.position = vec2(particle.physics.location.x, particle.physics.location.y)
+for i in 1..250:
+  var particle = newParticle("resources/1.png", float(twister.getNum mod 50) + 100, float(twister.getNum mod 50) + 100 )
+  particles.add(particle)
 
 window.vertical_sync_enabled = true
 
@@ -35,18 +35,16 @@ while window.open:
 
     window.clear color(0, 0, 0)
 
-    particle.update
+
+    for particle in particles:
+      particle.update
 
 
-    if particle.life.IsAlive:
-      echo particle.life.Age
-      particle_sprite.color= color(255, 255, 255, particle_sprite.color.a - uint8((255 / particle.life.Ttl)))
-      window.draw particle_sprite
-    else:
-      particle.life.IsAlive = true
-      particle.life.Age = 0
-      particle_sprite.position = vec2(particle.physics.location.x, particle.physics.location.y)
-      particle_sprite.color = color(0,0,0,255)
+      if particle.life.IsAlive:
+        particle.draw(window)
+      else:
+        particle.life.IsAlive = true
+        particle.life.Age = 0
 
 
     window.display()

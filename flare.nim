@@ -75,18 +75,38 @@ type
     physics*: Physics
     #tint:  Color
     life*: Life
+    sprite*: Sprite
+    texture*: Texture
 
 
-proc draw*(particle: Particle) = discard
+proc draw*(particle: Particle, render: RenderWindow) =
+  render.draw(particle.sprite, renderStates(BlendAdd))
+
 proc update*(particle: Particle) =
   particle.life.update
 
-proc newParticle*(x: float; y: float): Particle =
-  var
-    particle: Particle = new(Particle)
+  if particle.life.IsAlive:
+    particle.physics.update
+    particle.sprite.position = particle.physics.location
+    particle.sprite.color = color(255,255,255, particle.sprite.color.a - uint8(255 / particle.life.Ttl))
 
+proc newParticle*(textPath: string, x: float; y: float): Particle =
+  var
+    texture: Texture = new_Texture(textPath)
+    particle: Particle = new(Particle)
+    sprite: Sprite = new_Sprite(texture)
+
+
+
+
+  let size = texture.size
+
+  sprite.origin = vec2(size.x/2, size.y/2)
+  sprite.scale=vec2(0.05, 0.05)
   particle.physics = newPhysics(x, y)
-  particle.life = newLife(true, 255)
+  sprite.position = particle.physics.location
+  particle.life = newLife(true, 100)
+  particle.sprite = sprite
   result = particle
 
 
