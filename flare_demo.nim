@@ -7,6 +7,15 @@ const
   WINDOW_HEIGHT = 600
 
 var window = new_RenderWindow(video_mode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE)
+var particle = newParticle(50.0, 50.0)
+
+let particle_texture = new_Texture("resources/1.png")
+let particle_sprite = new_Sprite(particle_texture)
+let size = particle_texture.size
+
+particle_sprite.origin = vec2(size.x/2, size.y/2)
+particle_sprite.scale=vec2(0.05, 0.05)
+particle_sprite.position = vec2(particle.physics.location.x, particle.physics.location.y)
 
 window.vertical_sync_enabled = true
 
@@ -24,5 +33,6 @@ while window.open:
                 discard " "
           else: discard
 
-    window.clear color(0, 0, 0)    
+    window.clear color(0, 0, 0)
+    window.draw particle_sprite
     window.display()
