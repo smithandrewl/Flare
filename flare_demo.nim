@@ -1,11 +1,11 @@
 import csfml
 import flare
 import mersenne
-
+import sequtils
 const
   WINDOW_TITLE  = "Flare"
-  WINDOW_WIDTH  = 800
-  WINDOW_HEIGHT = 600
+  WINDOW_WIDTH  = 1366
+  WINDOW_HEIGHT = 768
 
 var window = new_RenderWindow(video_mode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE)
 var renderState = renderStates(BlendAdd)
@@ -13,9 +13,28 @@ var twister =  newMersenneTwister(1)
 
 var particles: seq[Particle] = @[]
 
-for i in 1..250:
-  var particle = newParticle("resources/1.png", float(twister.getNum mod 50) + 100, float(twister.getNum mod 50) + 100 )
-  particles.add(particle)
+proc summonHorde() =
+  var fixX = float((twister.getNum mod 400) + 200)
+  var fixY = float((twister.getNum mod 200) + 100)
+  particles = @[]
+
+  for i in 1..400:
+    var
+      particle = newParticle("resources/1.png", float(twister.getNum mod 25) + float(twister.getNum mod 100) + fixX, float(twister.getNum mod 25) + float(twister.getNum mod 100) + fixY )
+      randXDir: float
+      randYDir: float
+
+    randXDir = float(twister.getNum mod 2)
+    randYDir = float(twister.getNum mod 2)
+
+    if randXDir != 1:
+      randXDir = -1
+
+    if randYDir != 1:
+      randYDir = -1
+
+    particle.physics.velocity = vec2(float(twister.getNum mod 800) * float(randXDir) * 0.0025, float(twister.getNum mod 800) * 0.0025)
+    particles.add(particle)
 
 window.vertical_sync_enabled = true
 
@@ -35,16 +54,14 @@ while window.open:
 
     window.clear color(0, 0, 0)
 
-
     for particle in particles:
       particle.update
 
 
       if particle.life.IsAlive:
         particle.draw(window)
-      else:
-        particle.life.IsAlive = true
-        particle.life.Age = 0
 
+    if particles.allIt(it.life.IsAlive != true):
+      summon_horde()
 
     window.display()

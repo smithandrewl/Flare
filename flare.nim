@@ -11,8 +11,9 @@ type
     angularAcc*:      float
     rotation*:        float
 
-proc draw*(phys: Physics)   = discard
-proc update*(phys: Physics) = discard
+proc update*(phys: Physics) =
+  phys.location = phys.location + phys.velocity
+
 proc newPhysics*(x: float, y: float): Physics =
   var physics = new(Physics)
 
@@ -88,7 +89,7 @@ proc update*(particle: Particle) =
   if particle.life.IsAlive:
     particle.physics.update
     particle.sprite.position = particle.physics.location
-    particle.sprite.color = color(255,255,255, particle.sprite.color.a - uint8(255 / particle.life.Ttl))
+    particle.sprite.color = color(255,255,255, int(float(particle.sprite.color.a) - (255 / particle.life.Ttl)) )
 
 proc newParticle*(textPath: string, x: float; y: float): Particle =
   var
@@ -102,10 +103,10 @@ proc newParticle*(textPath: string, x: float; y: float): Particle =
   let size = texture.size
 
   sprite.origin = vec2(size.x/2, size.y/2)
-  sprite.scale=vec2(0.05, 0.05)
+  sprite.scale=vec2(0.25, 0.25)
   particle.physics = newPhysics(x, y)
   sprite.position = particle.physics.location
-  particle.life = newLife(true, 100)
+  particle.life = newLife(true, 255)
   particle.sprite = sprite
   result = particle
 
