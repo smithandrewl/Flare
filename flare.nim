@@ -54,7 +54,6 @@ type
     Age*:     int
     Ttl*:     int
 
-
 proc update*(life: Life) =
   if life.IsAlive:
     if life.Age >= life.Ttl:
@@ -71,15 +70,12 @@ proc newLife*(alive: bool; ttl: int): Life =
 
   result = life
 
-
 type
   Particle* = ref object of RootObj
     physics*: Physics
-    #tint:  Color
-    life*: Life
-    sprite*: Sprite
+    life*:    Life
+    sprite*:  Sprite
     texture*: Texture
-
 
 proc draw*(particle: Particle, render: RenderWindow) =
   render.draw(particle.sprite, renderStates(BlendAdd))
@@ -87,52 +83,53 @@ proc draw*(particle: Particle, render: RenderWindow) =
 proc update*(particle: Particle) =
   particle.life.update
 
-
   if particle.life.IsAlive:
     particle.physics.update
     particle.sprite.position = particle.physics.location
     particle.sprite.color = color(particle.sprite.color.r,  particle.sprite.color.g, particle.sprite.color.b, uint8(float(particle.sprite.color.a) - (255 / particle.life.Ttl)))
 
 proc newParticle*(texture: Texture, x: float; y: float): Particle =
-  var
+  let
     particle: Particle = new(Particle)
-    sprite: Sprite = new_Sprite(texture)
+    sprite:   Sprite   =   new_Sprite(texture)
+    size               = texture.size
 
-  let size = texture.size
-
-  sprite.origin = vec2(size.x/2, size.y/2)
-  sprite.scale=vec2(0.25, 0.25)
+  sprite.origin    = vec2(size.x/2, size.y/2)
+  sprite.scale     = vec2(0.25, 0.25)
   particle.physics = newPhysics(x, y)
-  sprite.position = particle.physics.location
-  particle.life = newLife(true, 255)
-  particle.sprite = sprite
-  result = particle
+  sprite.position  = particle.physics.location
+  particle.life    = newLife(true, 255)
+  particle.sprite  = sprite
+  result           = particle
 
 type
   ParticlePool* = ref object of RootObj
-    pool*: seq[Particle]
+    pool*:    seq[Particle]
     texture*: Texture
 
 proc grow(particlePool: ParticlePool, by: int) =
     for i in 1..by:
-      var
+      let
         particle: Particle = newParticle(particlePool.texture, 0, 0)
 
-      particle.life.Ttl = 255
-      particle.life.Age = 0
+      particle.life.Ttl     = 255
+      particle.life.Age     = 0
       particle.life.IsAlive = true
-      particlePool.pool.add(particle)
 
+      particlePool.pool.add(particle)
 
 proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int): Particle =
   if len(pool.pool) == 0:
     pool.grow(1000)
 
   result = pool.pool.pop
+
   result.physics.location = vec2(x, y)
-  result.life.Age = 0
-  result.life.Ttl = ttl
+
+  result.life.Age     = 0
+  result.life.Ttl     = ttl
   result.life.IsAlive = true
+
   result.sprite.color = color
 
 proc ret*(pool: ParticlePool, particle: Particle) =
@@ -140,17 +137,11 @@ proc ret*(pool: ParticlePool, particle: Particle) =
 
 proc newParticlePool*(texture: Texture): ParticlePool =
   result = new(ParticlePool)
-  result.pool = @[]
+
+  result.pool    = @[]
   result.texture = texture
+
   result.grow(1000)
-
-discard """
-ParticlePool
-  constructror(number)
-  obtain
-  release
-"""
-
 
 ######### Util ###########
 
@@ -168,8 +159,3 @@ proc newProperty*[T](startValue: T, endValue: T, variance: float): Property[T] =
   property.variance   = variance
 
   result = property
-
-#ObjectPool
-
-
-
