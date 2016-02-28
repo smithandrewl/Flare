@@ -13,6 +13,14 @@ var twister =  newMersenneTwister(1)
 
 var particles: seq[Particle] = @[]
 var texture: Texture = new_texture("resources/1.png")
+
+
+#echo texture.size
+
+var particlePool = newParticlePool(texture)
+echo particlePool.texture.size
+
+
 proc summonHorde() =
   var fixX = float((twister.getNum mod 400) + 200)
   var fixY = float((twister.getNum mod 200) + 100)
@@ -20,13 +28,16 @@ proc summonHorde() =
   var gOff = twister.getNum mod 5
   var bOff = twister.getNum mod 5
 
-
   particles = @[]
 
   for i in 1..1000:
     var
       scale = float((float((twister.getNum mod 25)) * 0.01) + 0.25)
-      particle = newParticle(texture, float(twister.getNum mod 25) + float(twister.getNum mod 100) + fixX, float(twister.getNum mod 25) + float(twister.getNum mod 100) + fixY )
+      x = float(twister.getNum mod 25) + float(twister.getNum mod 100) + fixX
+      y = float(twister.getNum mod 25) + float(twister.getNum mod 100) + fixY
+
+      particle = particlePool.borrow(x, y, color(255,255,255, 255), 255)
+
       randXDir: float
       randYDir: float
 
@@ -70,6 +81,9 @@ while window.open:
         particle.draw(window)
 
     if particles.allIt(it.life.IsAlive != true):
+      for particle in particles:
+        particlePool.ret(particle)
+
       summon_horde()
 
     window.display()

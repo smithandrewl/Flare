@@ -23,6 +23,7 @@ proc newPhysics*(x: float, y: float): Physics =
   result = physics
 
 ############ Particle ##########################
+
 discard """
     Emitter
     Particle
@@ -107,6 +108,41 @@ proc newParticle*(texture: Texture, x: float; y: float): Particle =
   particle.sprite = sprite
   result = particle
 
+type
+  ParticlePool* = ref object of RootObj
+    pool*: seq[Particle]
+    texture*: Texture
+
+proc grow(particlePool: ParticlePool, by: int) =
+    for i in 1..by:
+      var
+        particle: Particle = newParticle(particlePool.texture, 0, 0)
+
+      particle.life.Ttl = 255
+      particle.life.Age = 0
+      particle.life.IsAlive = true
+      particlePool.pool.add(particle)
+
+
+proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int): Particle =
+  if len(pool.pool) == 0:
+    pool.grow(1000)
+
+  result = pool.pool.pop
+  result.physics.location = vec2(x, y)
+  result.life.Age = 0
+  result.life.Ttl = ttl
+  result.life.IsAlive = true
+  result.sprite.color = color
+
+proc ret*(pool: ParticlePool, particle: Particle) =
+  pool.pool.add(particle)
+
+proc newParticlePool*(texture: Texture): ParticlePool =
+  result = new(ParticlePool)
+  result.pool = @[]
+  result.texture = texture
+  result.grow(1000)
 
 discard """
 ParticlePool
