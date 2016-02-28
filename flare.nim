@@ -86,19 +86,16 @@ proc draw*(particle: Particle, render: RenderWindow) =
 proc update*(particle: Particle) =
   particle.life.update
 
+
   if particle.life.IsAlive:
     particle.physics.update
     particle.sprite.position = particle.physics.location
-    particle.sprite.color = color(255,255,255, int(float(particle.sprite.color.a) - (255 / particle.life.Ttl)) )
+    particle.sprite.color = color(particle.sprite.color.r,  particle.sprite.color.g, particle.sprite.color.b, uint8(float(particle.sprite.color.a) - (255 / particle.life.Ttl)))
 
-proc newParticle*(textPath: string, x: float; y: float): Particle =
+proc newParticle*(texture: Texture, x: float; y: float): Particle =
   var
-    texture: Texture = new_Texture(textPath)
     particle: Particle = new(Particle)
     sprite: Sprite = new_Sprite(texture)
-
-
-
 
   let size = texture.size
 

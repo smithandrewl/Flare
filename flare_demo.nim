@@ -12,7 +12,7 @@ var renderState = renderStates(BlendAdd)
 var twister =  newMersenneTwister(1)
 
 var particles: seq[Particle] = @[]
-
+var texture: Texture = new_texture("resources/1.png")
 proc summonHorde() =
   var fixX = float((twister.getNum mod 400) + 200)
   var fixY = float((twister.getNum mod 200) + 100)
@@ -23,10 +23,10 @@ proc summonHorde() =
 
   particles = @[]
 
-  for i in 1..400:
+  for i in 1..1000:
     var
       scale = float((float((twister.getNum mod 25)) * 0.01) + 0.25)
-      particle = newParticle("resources/1.png", float(twister.getNum mod 25) + float(twister.getNum mod 100) + fixX, float(twister.getNum mod 25) + float(twister.getNum mod 100) + fixY )
+      particle = newParticle(texture, float(twister.getNum mod 25) + float(twister.getNum mod 100) + fixX, float(twister.getNum mod 25) + float(twister.getNum mod 100) + fixY )
       randXDir: float
       randYDir: float
 
