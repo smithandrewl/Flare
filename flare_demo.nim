@@ -16,10 +16,16 @@ var particles: seq[Particle] = @[]
 proc summonHorde() =
   var fixX = float((twister.getNum mod 400) + 200)
   var fixY = float((twister.getNum mod 200) + 100)
+  var rOff = twister.getNum mod 5
+  var gOff = twister.getNum mod 5
+  var bOff = twister.getNum mod 5
+
+
   particles = @[]
 
   for i in 1..400:
     var
+      scale = float((float((twister.getNum mod 25)) * 0.01) + 0.25)
       particle = newParticle("resources/1.png", float(twister.getNum mod 25) + float(twister.getNum mod 100) + fixX, float(twister.getNum mod 25) + float(twister.getNum mod 100) + fixY )
       randXDir: float
       randYDir: float
@@ -34,6 +40,8 @@ proc summonHorde() =
       randYDir = -1
 
     particle.physics.velocity = vec2(float(twister.getNum mod 800) * float(randXDir) * 0.0025, float(twister.getNum mod 800) * 0.0025)
+    particle.sprite.scale = vec2(scale, scale)
+    particle.sprite.color = color(255,255,255)
     particles.add(particle)
 
 window.vertical_sync_enabled = true
