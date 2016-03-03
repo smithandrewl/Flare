@@ -30,49 +30,18 @@ let
   particlePool     = newParticlePool(texture)
   SPAWN_COLOR      = color(255, 255, 255, 255)
   BACKGROUND_COLOR = color(0, 0, 0, 255)
+  prop = newProperty(10, 10, 0.5)
+  emitter: Emitter = newEmitter(particlePool, 400, 400, prop, prop, prop, prop, prop, prop, 1)
 var
   particles: seq[Particle] = @[]
   twister: MersenneTwister = newMersenneTwister(1)
-
-proc summonHorde() =
-  let
-    fixX = float((twister.getNum mod MAX_FIX_X) + MIN_FIX_X)
-    fixY = float((twister.getNum mod MAX_FIX_Y) + MIN_FIX_Y)
-
-  particles = @[]
-
-  for i in 1..NUM_PARTICLES:
-    let
-      scale = float((float((twister.getNum mod MAX_SCALE)) * SCALE_FACTOR) + MIN_SCALE)
-      x = float(float(twister.getNum mod MAX_PART_SPAWN_VAR) + fixX)
-      y = float(float(twister.getNum mod MAX_PART_SPAWN_VAR) + fixY)
-
-      particle = particlePool.borrow(x, y, SPAWN_COLOR, FULL_OPACITY)
-
-    var
-      randXDir = float(twister.getNum mod 2)
-      randYDir = float(twister.getNum mod 2)
-
-    if randXDir != 1:
-      randXDir = -1
-
-    if randYDir != 1:
-      randYDir = -1
-
-    particle.physics.velocity = vec2(
-      float(twister.getNum mod MAX_VEL) * float(randXDir) * VEL_SCALE_FACTOR, 
-      float(twister.getNum mod MAX_VEL) * VEL_SCALE_FACTOR
-    )
-
-    particle.sprite.scale = vec2(scale, scale)
-    particle.sprite.color = SPAWN_COLOR
-
-    particles.add(particle)
+  property: Property = newProperty(10, 10, 0.0)
 
 window.vertical_sync_enabled = true
 
 while window.open:
-    var event: Event
+    var 
+      event: Event
     while window.poll_event(event):
         case event.kind
           of EventType.Closed:
@@ -82,20 +51,12 @@ while window.open:
               of KeyCode.Q:
                 window.close()
               else: discard
-          else: discard
+          else:
+            emitter.physics.location = mouse_getPosition()
 
     window.clear BACKGROUND_COLOR
 
-    for particle in particles:
-      particle.update
-
-      if particle.life.IsAlive:
-        particle.draw(window)
-
-    if particles.allIt(not it.life.IsAlive):
-      for particle in particles:
-        particlePool.ret(particle)
-
-      summon_horde()
+    emitter.update
+    emitter.draw(window)
 
     window.display()
