@@ -1,5 +1,6 @@
 import csfml
 import mersenne
+import math
 
 ######### Util ###########
 
@@ -23,14 +24,11 @@ proc newProperty*(startValue: float, endValue: float, variance: float): Property
 type
   Physics* = ref object of RootObj
     location*:        Vector2f
-    velocity*:        Vector2f
-    acceleration*:    Vector2f
-    angularVelocity*: float
-    angularAcc*:      float
+    speed*:           float
     rotation*:        float
 
 proc update*(phys: Physics) =
-  phys.location = phys.location + phys.velocity
+  phys.location = phys.location + vec2(phys.speed * cos(phys.location.x), phys.speed * sin(phys.location.y))
 
 proc newPhysics*(x: float, y: float): Physics =
   var physics = new(Physics)
@@ -111,21 +109,21 @@ proc grow(particlePool: ParticlePool, by: int) =
 
       particlePool.pool.add(particle)
 
-proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, xVelocity: float, yVelocity: float): Particle =
+proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, speed: float, rotation: float): Particle =
   if len(pool.pool) == 0:
     pool.grow(1000)
 
   result = pool.pool.pop
 
   result.physics.location = vec2(x, y)
-  result.physics.velocity = vec2(xVelocity, yVelocity)
-
+  result.physics.rotation = rotation
+  result.physics.speed = speed
   result.life.Age     = 0
   result.life.Ttl     = ttl
   result.life.IsAlive = true
 
   result.sprite.color = color
-  result.sprite.scale = vec2(0.5, 0.5)
+  result.sprite.scale = vec2(0.125, 0.125)
 
 proc ret*(pool: ParticlePool, particle: Particle) =
   pool.pool.add(particle)
@@ -144,8 +142,7 @@ type
     physics*: Physics
     twister: MersenneTwister
 
-    xVelocity*: Property
-    yVelocity*: Property
+    speed*: Property
     rotation*:  Property
     size*:      Property
     color*:     Property
@@ -177,12 +174,13 @@ proc update*(emitter: Emitter) =
       emitter.pool.ret(particle)
       emitter.particles.delete(i)
   
-  var
-    xVel: float = randProperty(emitter.twister, emitter.xVelocity)[0]
-    yVel: float = randProperty(emitter.twister, emitter.yVelocity)[0]
+  
 
-  for i in 1..5:
-    emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,255),  5, xVel, yVel))
+  if emitter.curParticles < emitter.maxParticles:
+    for i in 1..50:
+      var
+        xVel: float = randProperty(emitter.twister, emitter.speed)[0]
+      emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,255),  50, xVel, 0))
 
 
 
@@ -191,8 +189,7 @@ proc newEmitter*(
   pool:      ParticlePool,
   x:         float,
   y:         float,
-  xVelocity: Property,
-  yVelocity: Property,
+  speed:     Property,
   rotation:  Property,
   size:      Property,
   color:     Property,
@@ -211,8 +208,7 @@ proc newEmitter*(
   result.particles    = @[]
 
   result.pool         = pool
-  result.xVelocity    = xVelocity
-  result.yVelocity    = yVelocity
+  result.speed        = speed
   result.rotation     = rotation
   result.size         = size
   result.color        = color
