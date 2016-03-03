@@ -33,7 +33,7 @@ let
   prop = newProperty(2.7, 10, 2.9)
   speed = newProperty(1.0, 10, 10.0)
 
-  emitter: Emitter = newEmitter(particlePool, 400.0, 400.0, speed, prop, prop, prop, prop, 5000)
+  emitter: Emitter = newEmitter(particlePool, 400.0, 400.0, speed, prop, prop, prop, prop, 800)
 var
   particles: seq[Particle] = @[]
   twister: MersenneTwister = newMersenneTwister(1)

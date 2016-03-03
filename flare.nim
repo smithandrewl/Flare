@@ -177,7 +177,7 @@ proc update*(emitter: Emitter) =
   
 
   if emitter.curParticles < emitter.maxParticles:
-    for i in 1..50:
+    for i in 1..min(50, emitter.maxParticles - emitter.curParticles):
       var
         xVel: float = randProperty(emitter.twister, emitter.speed)[0]
       emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,255),  50, xVel, 0))
