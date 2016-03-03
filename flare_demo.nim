@@ -30,12 +30,12 @@ let
   particlePool     = newParticlePool(texture)
   SPAWN_COLOR      = color(255, 255, 255, 255)
   BACKGROUND_COLOR = color(0, 0, 0, 255)
-  prop = newProperty(10, 10, 0.5)
-  emitter: Emitter = newEmitter(particlePool, 400, 400, prop, prop, prop, prop, prop, prop, 1)
+  prop = newProperty(2.7, 10, 2.9)
+  yVel = newProperty(9, 10, 0.9)
+  emitter: Emitter = newEmitter(particlePool, 400, 400, prop, prop, prop, prop, prop, yVel, 50)
 var
   particles: seq[Particle] = @[]
   twister: MersenneTwister = newMersenneTwister(1)
-  property: Property = newProperty(10, 10, 0.0)
 
 window.vertical_sync_enabled = true
 

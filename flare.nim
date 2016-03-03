@@ -79,7 +79,7 @@ proc update*(particle: Particle) =
   if particle.life.IsAlive:
     particle.physics.update
     particle.sprite.position = particle.physics.location
-    particle.sprite.color = color(particle.sprite.color.r,  particle.sprite.color.g, particle.sprite.color.b, uint8(float(particle.sprite.color.a) - (255 / particle.life.Ttl)))
+    particle.sprite.color = color(particle.sprite.color.r,  particle.sprite.color.g, particle.sprite.color.b, uint8(float(particle.sprite.color.a) - (100/ particle.life.Ttl)))
 
 proc newParticle*(texture: Texture, x: float; y: float): Particle =
   let
@@ -88,7 +88,7 @@ proc newParticle*(texture: Texture, x: float; y: float): Particle =
     size               = texture.size
 
   sprite.origin    = vec2(size.x/2, size.x/2)
-  sprite.scale     = vec2(0.25, 0.25)
+  sprite.scale     = vec2(0.125, 0.125)
   particle.physics = newPhysics(x, y)
   sprite.position  = particle.physics.location
   particle.life    = newLife(true, 255)
@@ -111,21 +111,21 @@ proc grow(particlePool: ParticlePool, by: int) =
 
       particlePool.pool.add(particle)
 
-proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int): Particle =
+proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, xVelocity: float, yVelocity: float): Particle =
   if len(pool.pool) == 0:
     pool.grow(1000)
 
   result = pool.pool.pop
 
   result.physics.location = vec2(x, y)
-  result.physics.velocity = vec2(0, -2)
+  result.physics.velocity = vec2(xVelocity, yVelocity)
 
   result.life.Age     = 0
   result.life.Ttl     = ttl
   result.life.IsAlive = true
 
   result.sprite.color = color
-  result.sprite.scale = vec2(0.25, 0.25)
+  result.sprite.scale = vec2(0.5, 0.5)
 
 proc ret*(pool: ParticlePool, particle: Particle) =
   pool.pool.add(particle)
@@ -156,6 +156,15 @@ type
     particles: seq[Particle]
     texture*: Texture
 
+proc randProperty(twister: var MersenneTwister, property: Property): (float, float) =
+  var
+    startVar    = property.startValue * property.variance
+    endVar      = property.endValue   * property.variance
+    startValue  = property.startValue + float(twister.getNum mod int(startVar))
+    endValue    = property.endValue   + float(twister.getNum mod int(endVar))
+
+  result = (startValue, endValue)
+
 proc draw*(emitter: Emitter, render: RenderWindow) =
   for particle in emitter.particles:
     particle.draw render
@@ -168,17 +177,15 @@ proc update*(emitter: Emitter) =
       emitter.pool.ret(particle)
       emitter.particles.delete(i)
   
-  emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,255), 300))
-
-
-proc randProperty(twister: var MersenneTwister, property: Property): (float, float) =
   var
-    startVar    = property.startValue * property.variance
-    endVar      = property.endValue   * property.variance
-    startValue  = property.startValue + float(twister.getNum mod int(endVar))
-    endValue    = property.endValue   + float(twister.getNum mod int(startVar))
+    xVel: float = randProperty(emitter.twister, emitter.xVelocity)[0]
+    yVel: float = randProperty(emitter.twister, emitter.yVelocity)[0]
 
-  result = (startValue, endValue)
+  for i in 1..5:
+    emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,255),  5, xVel, yVel))
+
+
+
 
 proc newEmitter*(
   pool:      ParticlePool,
