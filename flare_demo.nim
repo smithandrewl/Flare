@@ -31,9 +31,9 @@ let
   SPAWN_COLOR      = color(255, 255, 255, 255)
   BACKGROUND_COLOR = color(0, 0, 0, 255)
   prop = newProperty(2.7, 10, 2.9)
-  speed = newProperty(1.0, 10, 10.0)
-
-  emitter: Emitter = newEmitter(particlePool, 400.0, 400.0, speed, prop, prop, prop, prop, 800)
+  speed = newProperty(5.0, 10, 10.0)
+  ttl = newProperty(10.0, 10, 1.5)
+  emitter: Emitter = newEmitter(particlePool, 400.0, 400.0, speed, prop, prop, prop, prop, ttl, 400)
 var
   particles: seq[Particle] = @[]
   twister: MersenneTwister = newMersenneTwister(1)

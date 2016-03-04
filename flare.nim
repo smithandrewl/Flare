@@ -123,7 +123,7 @@ proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, spe
   result.life.IsAlive = true
 
   result.sprite.color = color
-  result.sprite.scale = vec2(0.125, 0.125)
+  result.sprite.scale = vec2(0.5, 0.5)
 
 proc ret*(pool: ParticlePool, particle: Particle) =
   pool.pool.add(particle)
@@ -147,6 +147,7 @@ type
     size*:      Property
     color*:     Property
     alpha*:     Property
+    ttl*:       Property
 
     maxParticles*: int
     curParticles: int
@@ -179,8 +180,11 @@ proc update*(emitter: Emitter) =
   if emitter.curParticles < emitter.maxParticles:
     for i in 1..min(50, emitter.maxParticles - emitter.curParticles):
       var
-        xVel: float = randProperty(emitter.twister, emitter.speed)[0]
-      emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,255),  50, xVel, 0))
+        speed: float = randProperty(emitter.twister, emitter.speed)[0]
+        ttl: int = int(randProperty(emitter.twister, emitter.ttl)[0])
+        rotation: float = randProperty(emitter.twister, emitter.rotation)[0]
+
+      emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,255),  ttl, speed, rotation))
 
 
 
@@ -194,6 +198,7 @@ proc newEmitter*(
   size:      Property,
   color:     Property,
   alpha:     Property,
+  ttl:       Property,
   maxParticles: int): Emitter =
 
   result = new(Emitter)
@@ -213,4 +218,5 @@ proc newEmitter*(
   result.size         = size
   result.color        = color
   result.alpha        = alpha
+  result.ttl          = ttl
   
