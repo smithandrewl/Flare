@@ -28,11 +28,11 @@ let
   window           = new_RenderWindow(video_mode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE)
   texture          = new_texture(PARTICLE_IMG)
   particlePool     = newParticlePool(texture)
-  SPAWN_COLOR      = color(255, 255, 255, 255)
+  SPAWN_COLOR      = color(0, 0, 255, 255)
   BACKGROUND_COLOR = color(0, 0, 0, 255)
   prop = newProperty(2.7, 10, 2.9)
-  speed = newProperty(5.0, 10, 10.0)
-  ttl = newProperty(10.0, 10, 1.5)
+  speed = newProperty(10.0, 10, 0.7)
+  ttl = newProperty(10.0, 10, 10.5)
   emitter: Emitter = newEmitter(particlePool, 400.0, 400.0, speed, prop, prop, prop, prop, ttl, 400)
 var
   particles: seq[Particle] = @[]

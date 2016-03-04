@@ -78,6 +78,12 @@ proc update*(particle: Particle) =
     particle.physics.update
     particle.sprite.position = particle.physics.location
     particle.sprite.color = color(particle.sprite.color.r,  particle.sprite.color.g, particle.sprite.color.b, uint8(float(particle.sprite.color.a) - (100/ particle.life.Ttl)))
+    
+    var
+      size = particle.sprite.scale.x - (1 / particle.life.Ttl)
+
+    particle.sprite.scale = vec2(size, size)
+
 
 proc newParticle*(texture: Texture, x: float; y: float): Particle =
   let
