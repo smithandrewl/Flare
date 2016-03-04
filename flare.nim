@@ -66,7 +66,7 @@ proc update*(particle: Particle) =
     particle.sprite.position = particle.physics.location
     particle.sprite.color    = color(particle.sprite.color.r,  particle.sprite.color.g, particle.sprite.color.b, uint8(float(particle.sprite.color.a) - (255/ particle.life.Ttl)))
     
-    let size = particle.sprite.scale.x - (0.5 / float(particle.life.Ttl))
+    let size = particle.sprite.scale.x - (0.25 / float(particle.life.Ttl))
 
     particle.sprite.scale = vec2(size, size)
 
@@ -112,7 +112,7 @@ proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, spe
   result.life.Ttl         = ttl
   result.life.IsAlive     = true
   result.sprite.color     = color
-  result.sprite.scale     = vec2(0.5, 0.5)
+  result.sprite.scale     = vec2(0.25, 0.25)
 
 proc ret*(pool: ParticlePool, particle: Particle) =
   pool.pool.add(particle)
