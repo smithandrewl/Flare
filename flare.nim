@@ -64,7 +64,7 @@ proc update*(particle: Particle) =
   if particle.life.IsAlive:
     particle.physics.update
     particle.sprite.position = particle.physics.location
-    particle.sprite.color    = color(particle.sprite.color.r,  particle.sprite.color.g, particle.sprite.color.b, uint8(float(particle.sprite.color.a) - (100/ particle.life.Ttl)))
+    particle.sprite.color    = color(particle.sprite.color.r,  particle.sprite.color.g, particle.sprite.color.b, uint8(float(particle.sprite.color.a) - (255/ particle.life.Ttl)))
     
     let size = particle.sprite.scale.x - (1 / particle.life.Ttl)
 
