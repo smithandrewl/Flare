@@ -15,9 +15,6 @@ let
   speed            = newProperty(10.0, 10, 0.7)
   ttl              = newProperty(10.0, 10, 10.5)
   emitter: Emitter = newEmitter(particlePool, 400.0, 400.0, speed, prop, prop, prop, prop, ttl, 400)
-var
-  particles: seq[Particle]   = @[]
-  twister:   MersenneTwister = newMersenneTwister(1)
 
 window.vertical_sync_enabled = true
 

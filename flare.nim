@@ -127,28 +127,26 @@ proc newParticlePool*(texture: Texture): ParticlePool =
 
 type
   Emitter* = ref object of RootObj
-    pool: ParticlePool
-    physics*: Physics
-    twister: MersenneTwister
-
-    speed*: Property
-    rotation*:  Property
-    size*:      Property
-    color*:     Property
-    alpha*:     Property
-    ttl*:       Property
-
+    pool:          ParticlePool
+    physics*:      Physics
+    twister:       MersenneTwister
+    speed*:        Property
+    rotation*:     Property
+    size*:         Property
+    color*:        Property
+    alpha*:        Property
+    ttl*:          Property
     maxParticles*: int
-    curParticles: int
-    particles: seq[Particle]
-    texture*: Texture
+    curParticles:  int
+    particles:     seq[Particle]
+    texture*:      Texture
 
 proc randProperty(twister: var MersenneTwister, property: Property): (float, float) =
-  var
-    startVar    = property.startValue * property.variance
-    endVar      = property.endValue   * property.variance
-    startValue  = property.startValue + float(twister.getNum mod int(startVar))
-    endValue    = property.endValue   + float(twister.getNum mod int(endVar))
+  let
+    startVar   = property.startValue * property.variance
+    endVar     = property.endValue   * property.variance
+    startValue = property.startValue + float(twister.getNum mod int(startVar))
+    endValue   = property.endValue   + float(twister.getNum mod int(endVar))
 
   result = (startValue, endValue)
 
@@ -166,9 +164,9 @@ proc update*(emitter: Emitter) =
   
   if emitter.curParticles < emitter.maxParticles:
     for i in 1..min(50, emitter.maxParticles - emitter.curParticles):
-      var
-        speed: float = randProperty(emitter.twister, emitter.speed)[0]
-        ttl: int = int(randProperty(emitter.twister, emitter.ttl)[0])
+      let
+        speed:    float = randProperty(emitter.twister, emitter.speed)[0]
+        ttl:      int   = int(randProperty(emitter.twister, emitter.ttl)[0])
         rotation: float = randProperty(emitter.twister, emitter.rotation)[0]
 
       emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,255),  ttl, speed, rotation))
