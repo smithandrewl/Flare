@@ -1,6 +1,7 @@
 import csfml
 import mersenne
 import math
+import times
 
 ######### Util ###########
 
@@ -192,9 +193,6 @@ proc update*(emitter: Emitter) =
 
       emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,255),  ttl, speed, rotation))
 
-
-
-
 proc newEmitter*(
   pool:      ParticlePool,
   x:         float,
@@ -209,7 +207,7 @@ proc newEmitter*(
 
   result = new(Emitter)
 
-  result.twister = newMersenneTwister(1)
+  result.twister = newMersenneTwister(int(epochTime()))
 
 
   result.physics = newPhysics(x, y)
