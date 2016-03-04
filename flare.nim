@@ -20,7 +20,7 @@ type
     rotation*:        float
 
 proc update*(phys: Physics) =
-  phys.location = phys.location + vec2(phys.speed * cos(phys.location.x), phys.speed * sin(phys.location.y))
+  phys.location = phys.location + vec2(phys.speed * cos(phys.rotation), phys.speed * sin(phys.rotation))
 
 proc newPhysics*(x: float, y: float): Physics =
   result = new(Physics)
@@ -155,6 +155,8 @@ proc draw*(emitter: Emitter, render: RenderWindow) =
     particle.draw render
 
 proc update*(emitter: Emitter) =
+  emitter.physics.update
+
   for i, particle in emitter.particles:
     particle.update
 
