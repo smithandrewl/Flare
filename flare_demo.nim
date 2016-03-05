@@ -1,7 +1,7 @@
 import csfml, flare, mersenne, sequtils
 
 const
-  WINDOW_TITLE     = "Flare"
+  WINDOW_TITLE     = "Flare Demo"
   WINDOW_WIDTH     = 1366
   WINDOW_HEIGHT    = 768
   PARTICLE_IMG     = "resources/1.png"
@@ -51,6 +51,19 @@ window.vertical_sync_enabled = true
 
 emitter.physics.rotation = 0
 
+var font: Font = new_Font("resources/DroidSansMono/DroidSansMono.ttf")
+var text: Text = new_Text("", font)
+var text2: Text = new_Text("", font)
+var text3: Text = new_Text("Press Q to quit", font)
+
+text3.position = vec2(600, 10)
+text2.position = vec2(5, 45)
+text.position = vec2(5, 25)
+
+text.characterSize = 16
+text2.characterSize = 16
+text3.characterSize = 16
+
 while window.open:
     var 
       event: Event
@@ -75,4 +88,11 @@ while window.open:
     emitter.draw(window)
     emitter2.draw(window)
 
+    let particleCount = len(emitter.particles) + len(emitter2.particles)
+    let pooledParticles = len(emitter.pool.pool) + len(emitter2.pool.pool)
+    text.str = "Active Particles: " & $particleCount
+    text2.str = "Pooled particles: " & $pooledParticles
+    window.draw(text)
+    window.draw(text2)
+    window.draw(text3)
     window.display()

@@ -127,7 +127,7 @@ proc newParticlePool*(texture: Texture): ParticlePool =
 
 type
   Emitter* = ref object of RootObj
-    pool:          ParticlePool
+    pool*:          ParticlePool
     physics*:      Physics
     twister:       MersenneTwister
     speed*:        Property
@@ -138,7 +138,7 @@ type
     ttl*:          Property
     maxParticles*: int
     curParticles:  int
-    particles:     seq[Particle]
+    particles*:     seq[Particle]
     texture*:      Texture
 
 proc randProperty(twister: var MersenneTwister, property: Property): (float, float) =
