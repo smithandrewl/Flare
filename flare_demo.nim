@@ -8,7 +8,7 @@ const
   PARTICLE2_IMG    = "resources/2.png"
 
   BACKGROUND_COLOR = color(0, 0, 0, 255)
-  maxParticles     = 40
+  maxParticles     = 2000
 let
   window           = new_RenderWindow(video_mode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE)
   texture          = new_texture(PARTICLE_IMG)

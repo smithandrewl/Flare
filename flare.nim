@@ -163,7 +163,7 @@ proc update*(emitter: Emitter) =
     if particle.life.IsAlive != true:
       emitter.pool.ret(particle)
       emitter.particles.delete(i)
-  
+      emitter.curParticles -= 1
   if emitter.curParticles < emitter.maxParticles:
     for i in 1..min(50, emitter.maxParticles - emitter.curParticles):
       let
@@ -172,9 +172,10 @@ proc update*(emitter: Emitter) =
         rotation: float = randProperty(emitter.twister, emitter.rotation)[0]
 
       emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,255),  ttl, speed, rotation))
+      emitter.curParticles += 1
 
 proc newEmitter*(
-  pool:      ParticlePool,
+  pool:      ParticlePool,  
   x:         float,
   y:         float,
   speed:     Property,
