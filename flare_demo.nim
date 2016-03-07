@@ -14,34 +14,33 @@ let
   texture          = new_texture(PARTICLE_IMG)
   texture2         = new_texture(PARTICLE2_IMG)
   particlePool     = newParticlePool(texture)
-  particlePool2     = newParticlePool(texture2)
-
+  particlePool2    = newParticlePool(texture2)
   prop             = newProperty(2.7, 10, 2.9)
 
   emitter: Emitter = newEmitter(
-    particlePool, 
-    0, 
-    0, 
-    speed = newProperty(5, 10, 0.7), 
-    rotation = newProperty(10.0, 10, 30.0), 
-    prop, 
-    prop, 
-    prop, 
-    ttl = newProperty(4.0, 10, 10.5), 
-    maxParticles
+    pool = particlePool, 
+    x            = 0, 
+    y            = 0, 
+    speed        = newProperty(5, 10, 0.7), 
+    rotation     = newProperty(10.0, 10, 30.0), 
+    size         = prop, 
+    color        = prop, 
+    alpha        = prop, 
+    ttl          = newProperty(4.0, 10, 10.5), 
+    maxParticles = maxParticles
   )
   
   emitter2: Emitter = newEmitter(
-    particlePool2, 
-    0, 
-    0, 
-    speed    = newProperty(2.0, 10, 0.5), 
-    rotation = newProperty(3.0, 10, 2.0), 
-    prop, 
-    prop, 
-    prop, 
-    ttl      = newProperty(25.0, 10, 2.0), 
-    maxParticles
+    pool = particlePool2, 
+    x            = 0, 
+    y            = 0, 
+    speed        = newProperty(2.0, 10, 0.5), 
+    rotation     = newProperty(3.0, 10, 2.0), 
+    size         = prop, 
+    color        = prop, 
+    alpha        = prop, 
+    ttl          = newProperty(25.0, 10, 2.0), 
+    maxParticles = maxParticles
   )
 
 window.vertical_sync_enabled = true
