@@ -88,7 +88,7 @@ while window.open:
                 activeEmitter = nil
               of KeyCode.F:
 
-                if(len(comets) < 5):
+                if(len(comets) < 3):
 
                   var comet = newEmitter(
                         pool = particlePool3, 
@@ -96,11 +96,11 @@ while window.open:
                         y            = float(mouse_getPosition().y), 
                         speed        = newProperty(1.5, 10, 5.125), 
                         rotation     = newProperty(1.5, 10, 0.0125), 
-                        size         = newProperty(0.125, 10, 0.5), 
+                        size         = newProperty(0.25, 10, 0.5), 
                         color        = prop, 
                         alpha        = prop, 
                         ttl          = newProperty(5.0, 10, 5.0), 
-                        maxParticles = 600,
+                        maxParticles = 1000,
                         life = newLife(true, 90)
                   )
                   
