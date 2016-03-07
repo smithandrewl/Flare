@@ -23,7 +23,7 @@ let
     y            = 0, 
     speed        = newProperty(5, 10, 0.7), 
     rotation     = newProperty(10.0, 10, 30.0), 
-    size         = newProperty(0.25, 10, 1.0), 
+    size         = newProperty(0.25, 10, 0.5), 
     color        = prop, 
     alpha        = prop, 
     ttl          = newProperty(4.0, 10, 10.5), 
@@ -36,10 +36,10 @@ let
     y            = 0, 
     speed        = newProperty(2.0, 10, 0.5), 
     rotation     = newProperty(3.0, 10, 2.0), 
-    size         = newProperty(0.25, 10, 1.0), 
+    size         = newProperty(0.25, 10, 0.5), 
     color        = prop, 
     alpha        = prop, 
-    ttl          = newProperty(25.0, 10, 2.0), 
+    ttl          = newProperty(50.0, 10, 2.0), 
     maxParticles = maxParticles
   )
 

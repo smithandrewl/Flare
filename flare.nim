@@ -64,9 +64,11 @@ proc update*(particle: Particle) =
   if particle.life.IsAlive:
     particle.physics.update
     particle.sprite.position = particle.physics.location
-    particle.sprite.color    = color(particle.sprite.color.r,  particle.sprite.color.g, particle.sprite.color.b, uint8(float(particle.sprite.color.a) - (255/ particle.life.Ttl)))
+    let alpha = uint8(float(particle.sprite.color.a) - (255/ particle.life.Ttl))
+
+    particle.sprite.color    = color(particle.sprite.color.r,  particle.sprite.color.g, particle.sprite.color.b, alpha)
     
-    let size = particle.sprite.scale.x - (0.25 / float(particle.life.Ttl))
+    let size = max(0, particle.sprite.scale.x - (0.25 / float(particle.life.Ttl)))
 
     particle.sprite.scale = vec2(size, size)
 
@@ -172,7 +174,7 @@ proc update*(emitter: Emitter) =
         rotation: float = randProperty(emitter.twister, emitter.rotation)[0]
         size:     float = randProperty(emitter.twister, emitter.size)[0]
 
-      emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,255),  ttl, speed, rotation, size))
+      emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,0),  ttl, speed, rotation, size))
       emitter.curParticles += 1
 
 proc newEmitter*(
