@@ -142,6 +142,7 @@ type
     curParticles:  int
     particles*:     seq[Particle]
     texture*:      Texture
+    life*:         Life
 
 proc randProperty(twister: var MersenneTwister, property: Property): (float, float) =
   let
@@ -157,6 +158,10 @@ proc draw*(emitter: Emitter, render: RenderWindow) =
     particle.draw render
 
 proc update*(emitter: Emitter) =
+  
+  if emitter.life != nil:
+    emitter.life.update
+
   emitter.physics.update
 
   for i, particle in emitter.particles:
@@ -187,7 +192,8 @@ proc newEmitter*(
   color:     Property,
   alpha:     Property,
   ttl:       Property,
-  maxParticles: int): Emitter =
+  maxParticles: int,
+  life: Life = nil): Emitter =
 
   result = new(Emitter)
 
@@ -203,3 +209,4 @@ proc newEmitter*(
   result.color        = color
   result.alpha        = alpha
   result.ttl          = ttl
+  result.life         = life
