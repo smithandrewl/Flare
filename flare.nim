@@ -103,7 +103,7 @@ proc grow(particlePool: ParticlePool, by: int) =
       particlePool.pool.add(particle)
 
 proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, speed: float, rotation: float, size: float): Particle =
-  if len(pool.pool) == 0: pool.grow(1000)
+  if len(pool.pool) == 0: pool.grow(10)
 
   result = pool.pool.pop
 
@@ -125,7 +125,7 @@ proc newParticlePool*(texture: Texture): ParticlePool =
   result.pool    = @[]
   result.texture = texture
 
-  result.grow(1000)
+  result.grow(500)
 
 type
   Emitter* = ref object of RootObj
