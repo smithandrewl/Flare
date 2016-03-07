@@ -4,8 +4,8 @@ discard GC_disable
 
 const
   WINDOW_TITLE     = "Flare Demo"
-  WINDOW_WIDTH     = 1366
-  WINDOW_HEIGHT    = 768
+  WINDOW_WIDTH     = 1680
+  WINDOW_HEIGHT    = 1050
   PARTICLE_IMG     = "resources/3.png"
   PARTICLE2_IMG    = "resources/2.png"
   PARTICLE3_IMG    = "resources/1.png"
@@ -25,8 +25,8 @@ let
 proc summonGreenGlobe(): Emitter =
   result = newEmitter(
     pool = globePool, 
-    x            = 400, 
-    y            = 400, 
+    x            = 600, 
+    y            = 500, 
     speed        = newProperty(5, 10, 0.7), 
     rotation     = newProperty(10.0, 10, 30.0), 
     size         = newProperty(0.25, 10, 0.25), 
@@ -39,8 +39,8 @@ proc summonGreenGlobe(): Emitter =
 proc summonSun(): Emitter =
   result = newEmitter(
     pool         = sunPool, 
-    x            = 800, 
-    y            = 400, 
+    x            = 1000, 
+    y            = 500, 
     speed        = newProperty(2.0, 10, 0.5), 
     rotation     = newProperty(3.0, 10, 2.0), 
     size         = newProperty(0.25, 10, 0.25), 
