@@ -1,4 +1,4 @@
-import csfml, flare, mersenne, sequtils
+import csfml, flare, mersenne, sequtils, math
 
 const
   WINDOW_TITLE     = "Flare Demo"
@@ -59,6 +59,8 @@ let
     maxParticles = maxParticles
   )
 
+var comets: seq[Emitter] = @[]
+
 var activeEmitter: Emitter = nil
 
 window.vertical_sync_enabled = true
@@ -98,6 +100,25 @@ while window.open:
                 mouse_setPosition(vec2(int(activeEmitter.physics.location.x), int(activeEmitter.physics.location.y)))
               of KeyCode.Num4:
                 activeEmitter = nil
+              of KeyCode.F:
+                var comet = newEmitter(
+                      pool = particlePool3, 
+                      x            = float(mouse_getPosition().x), 
+                      y            = float(mouse_getPosition().y), 
+                      speed        = newProperty(1.5, 10, 5.125), 
+                      rotation     = newProperty(1.5, 10, 0.0125), 
+                      size         = newProperty(0.125, 10, 0.5), 
+                      color        = prop, 
+                      alpha        = prop, 
+                      ttl          = newProperty(10.0, 10, 5.0), 
+                      maxParticles = 2000
+                )
+                
+                comet.physics.rotation = 4.5
+                comet.physics.speed = 10
+
+                comets.add(comet)
+
               of KeyCode.Q:
                 window.close()
               else: discard
@@ -110,12 +131,20 @@ while window.open:
     emitter2.update
     emitter3.update
 
+    for comet in comets:
+      comet.update
+
     emitter.draw(window)
     emitter2.draw(window)
     emitter3.draw(window)
-    let particleCount   = len(emitter.particles) + len(emitter2.particles) + len(emitter3.particles)
+    
+    for comet in comets:
+      comet.draw window
+
+    let particleCount   = len(emitter.particles) + len(emitter2.particles) + len(emitter3.particles) + sum(mapIt(comets, len(it.particles)))
     let pooledParticles = len(emitter.pool.pool) + len(emitter2.pool.pool) + len(emitter3.pool.pool)
     
+
     text.str  = "Active Particles: " & $particleCount
     text2.str = "Pooled particles: " & $pooledParticles
     
