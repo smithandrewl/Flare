@@ -15,9 +15,9 @@ proc newProperty*(startValue: float, endValue: float, variance: float): Property
 
 type
   Physics* = ref object of RootObj
-    location*:        Vector2f
-    speed*:           float
-    rotation*:        float
+    location*:  Vector2f
+    speed*:     float
+    rotation*:  float
 
 proc update*(phys: Physics) =
   phys.location = phys.location + vec2(phys.speed * cos(phys.rotation), phys.speed * sin(phys.rotation))
@@ -64,9 +64,10 @@ proc update*(particle: Particle) =
   if particle.life.IsAlive:
     particle.physics.update
     particle.sprite.position = particle.physics.location
+
     let alpha = uint8(float(particle.sprite.color.a) - (255/ particle.life.Ttl))
 
-    particle.sprite.color    = color(particle.sprite.color.r,  particle.sprite.color.g, particle.sprite.color.b, alpha)
+    particle.sprite.color = color(particle.sprite.color.r,  particle.sprite.color.g, particle.sprite.color.b, alpha)
     
     let size = max(0, particle.sprite.scale.x - (0.25 / float(particle.life.Ttl)))
 
@@ -129,7 +130,7 @@ proc newParticlePool*(texture: Texture): ParticlePool =
 
 type
   Emitter* = ref object of RootObj
-    pool*:          ParticlePool
+    pool*:         ParticlePool
     physics*:      Physics
     twister:       MersenneTwister
     speed*:        Property
@@ -140,14 +141,14 @@ type
     ttl*:          Property
     maxParticles*: int
     curParticles:  int
-    particles*:     seq[Particle]
+    particles*:    seq[Particle]
     texture*:      Texture
     life*:         Life
 
 proc randProperty(twister: var MersenneTwister, property: Property): (float, float) =
   let
     startVar:   float   = property.startValue * property.variance
-    endVar:    float    = property.endValue   * property.variance
+    endVar:     float   = property.endValue   * property.variance
     startValue: float   = property.startValue + (float((twister.getNum * 1000) mod int(startVar * 1000)) / 1000 )
     endValue:   float   = property.endValue   + (float((twister.getNum * 1000) mod int(endVar * 1000)) / 100)
 
@@ -183,17 +184,17 @@ proc update*(emitter: Emitter) =
       emitter.curParticles += 1
 
 proc newEmitter*(
-  pool:      ParticlePool,  
-  x:         float,
-  y:         float,
-  speed:     Property,
-  rotation:  Property,
-  size:      Property,
-  color:     Property,
-  alpha:     Property,
-  ttl:       Property,
+  pool:         ParticlePool,  
+  x:            float,
+  y:            float,
+  speed:        Property,
+  rotation:     Property,
+  size:         Property,
+  color:        Property,
+  alpha:        Property,
+  ttl:          Property,
   maxParticles: int,
-  life: Life = nil): Emitter =
+  life:         Life = nil): Emitter =
 
   result = new(Emitter)
 

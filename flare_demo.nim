@@ -17,13 +17,14 @@ let
   texture          = new_texture(PARTICLE_IMG)
   texture2         = new_texture(PARTICLE2_IMG)
   texture3         = new_texture(PARTICLE3_IMG)
-  particlePool     = newParticlePool(texture)
-  particlePool2    = newParticlePool(texture2)
-  particlePool3    = newParticlePool(texture3)
+  globePool        = newParticlePool(texture)
+  sunPool          = newParticlePool(texture2)
+  cometPool        = newParticlePool(texture3)
   prop             = newProperty(2.7, 10, 2.9)
 
-  emitter: Emitter = newEmitter(
-    pool = particlePool, 
+proc summonGreenGlobe(): Emitter =
+  result = newEmitter(
+    pool = globePool, 
     x            = 400, 
     y            = 400, 
     speed        = newProperty(5, 10, 0.7), 
@@ -35,8 +36,9 @@ let
     maxParticles = maxParticles
   )
   
-  emitter2: Emitter = newEmitter(
-    pool = particlePool2, 
+proc summonSun(): Emitter =
+  result = newEmitter(
+    pool         = sunPool, 
     x            = 800, 
     y            = 400, 
     speed        = newProperty(2.0, 10, 0.5), 
@@ -48,26 +50,44 @@ let
     maxParticles = maxParticles
   )
 
-var comets: seq[Emitter] = @[]
+proc summonComet(): Emitter =
+    result = newEmitter(
+      pool         = cometPool, 
+      x            = float(mouse_getPosition().x), 
+      y            = float(mouse_getPosition().y), 
+      speed        = newProperty(1.5, 10, 5.125), 
+      rotation     = newProperty(1.5, 10, 0.0125), 
+      size         = newProperty(0.25, 10, 0.5), 
+      color        = prop, 
+      alpha        = prop, 
+      ttl          = newProperty(5.0, 10, 5.0), 
+      maxParticles = 1000,
+      life         = newLife(true, 90)
+    )
 
-var activeEmitter: Emitter = nil
+let
+  greenGlobe = summonGreenGlobe()
+  sun        = summonSun()
+
+var comets:        seq[Emitter] = @[]
+var activeEmitter: Emitter      = nil
 
 window.vertical_sync_enabled = true
 
-emitter.physics.rotation = 0
+greenGlobe.physics.rotation = 0
 
-var font:  Font = new_Font("resources/DroidSansMono/DroidSansMono.ttf")
-var text:  Text = new_Text("", font)
-var text2: Text = new_Text("", font)
-var text3: Text = new_Text("Press Q to quit, F to launch a comet, 1-2 to control emitters, 3 to detach", font)
+var font:         Font = new_Font("resources/DroidSansMono/DroidSansMono.ttf")
+var activeLabel:  Text = new_Text("", font)
+var pooledLabel:  Text = new_Text("", font)
+var usageLabel:   Text = new_Text("Press Q to quit, F to launch a comet, 1-2 to control emitters, 3 to detach", font)
 
-text3.position = vec2(400, 10)
-text2.position = vec2(5, 45)
-text.position  = vec2(5, 25)
+usageLabel.position  = vec2(400, 10)
+pooledLabel.position = vec2(5, 45)
+activeLabel.position = vec2(5, 25)
 
-text.characterSize  = 16
-text2.characterSize = 16
-text3.characterSize = 16
+activeLabel.characterSize = 16
+pooledLabel.characterSize = 16
+usageLabel.characterSize  = 16
 
 while window.open:
     var 
@@ -79,33 +99,20 @@ while window.open:
           of EventType.KeyPressed:
             case event.key.code
               of KeyCode.Num1:
-                activeEmitter = emitter
+                activeEmitter = greenGlobe
                 mouse_setPosition(vec2(int(activeEmitter.physics.location.x), int(activeEmitter.physics.location.y)))
               of KeyCode.Num2:
-                activeEmitter = emitter2
+                activeEmitter = sun
                 mouse_setPosition(vec2(int(activeEmitter.physics.location.x), int(activeEmitter.physics.location.y)))
               of KeyCode.Num3:
                 activeEmitter = nil
               of KeyCode.F:
 
                 if(len(comets) < 3):
-
-                  var comet = newEmitter(
-                        pool = particlePool3, 
-                        x            = float(mouse_getPosition().x), 
-                        y            = float(mouse_getPosition().y), 
-                        speed        = newProperty(1.5, 10, 5.125), 
-                        rotation     = newProperty(1.5, 10, 0.0125), 
-                        size         = newProperty(0.25, 10, 0.5), 
-                        color        = prop, 
-                        alpha        = prop, 
-                        ttl          = newProperty(5.0, 10, 5.0), 
-                        maxParticles = 1000,
-                        life = newLife(true, 90)
-                  )
+                  let comet = summonComet()
                   
                   comet.physics.rotation = 4.5
-                  comet.physics.speed = 10
+                  comet.physics.speed    = 10
 
                   comets.add(comet)
 
@@ -117,8 +124,8 @@ while window.open:
               activeEmitter.physics.location  = mouse_getPosition()
     window.clear BACKGROUND_COLOR
 
-    emitter.update
-    emitter2.update
+    greenGlobe.update
+    sun.update
 
     for i, comet in comets:
       if comet.life.IsAlive:
@@ -126,23 +133,23 @@ while window.open:
       else:
         comets.delete(i)
 
-    emitter.draw(window)
-    emitter2.draw(window)
+    greenGlobe.draw(window)
+    sun.draw(window)
     
     for comet in comets:
       if comet.life.IsAlive:
         comet.draw window
 
-    let particleCount   = len(emitter.particles) + len(emitter2.particles) + sum(mapIt(comets, len(it.particles)))
-    let pooledParticles = len(emitter.pool.pool) + len(emitter2.pool.pool) + sum(mapIt(comets, len(it.pool.pool)))
+    let particleCount   = len(greenGlobe.particles) + len(sun.particles) + sum(mapIt(comets, len(it.particles)))
+    let pooledParticles = len(greenGlobe.pool.pool) + len(sun.pool.pool) + sum(mapIt(comets, len(it.pool.pool)))
     
 
-    text.str  = "Active Particles: " & $particleCount
-    text2.str = "Pooled particles: " & $pooledParticles
+    activeLabel.str  = "Active Particles: " & $particleCount
+    pooledLabel.str  = "Pooled particles: " & $pooledParticles
     
-    window.draw(text)
-    window.draw(text2)
-    window.draw(text3)
+    window.draw(activeLabel)
+    window.draw(pooledLabel)
+    window.draw(usageLabel)
     window.display()
 
     GC_step(200, true)
