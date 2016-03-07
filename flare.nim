@@ -100,7 +100,7 @@ proc grow(particlePool: ParticlePool, by: int) =
 
       particlePool.pool.add(particle)
 
-proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, speed: float, rotation: float): Particle =
+proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, speed: float, rotation: float, size: float): Particle =
   if len(pool.pool) == 0: pool.grow(1000)
 
   result = pool.pool.pop
@@ -112,7 +112,7 @@ proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, spe
   result.life.Ttl         = ttl
   result.life.IsAlive     = true
   result.sprite.color     = color
-  result.sprite.scale     = vec2(0.25, 0.25)
+  result.sprite.scale     = vec2(size, size)
 
 proc ret*(pool: ParticlePool, particle: Particle) =
   pool.pool.add(particle)
@@ -143,10 +143,10 @@ type
 
 proc randProperty(twister: var MersenneTwister, property: Property): (float, float) =
   let
-    startVar   = property.startValue * property.variance
-    endVar     = property.endValue   * property.variance
-    startValue = property.startValue + float(twister.getNum mod int(startVar))
-    endValue   = property.endValue   + float(twister.getNum mod int(endVar))
+    startVar:   float   = property.startValue * property.variance
+    endVar:    float    = property.endValue   * property.variance
+    startValue: float   = property.startValue + (float((twister.getNum * 1000) mod int(startVar * 1000)) / 1000 )
+    endValue:   float   = property.endValue   + (float((twister.getNum * 1000) mod int(endVar * 1000)) / 100)
 
   result = (startValue, endValue)
 
@@ -170,8 +170,9 @@ proc update*(emitter: Emitter) =
         speed:    float = randProperty(emitter.twister, emitter.speed)[0]
         ttl:      int   = int(randProperty(emitter.twister, emitter.ttl)[0])
         rotation: float = randProperty(emitter.twister, emitter.rotation)[0]
+        size:     float = randProperty(emitter.twister, emitter.size)[0]
 
-      emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,255),  ttl, speed, rotation))
+      emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,255),  ttl, speed, rotation, size))
       emitter.curParticles += 1
 
 proc newEmitter*(
