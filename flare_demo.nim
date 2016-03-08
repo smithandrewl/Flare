@@ -4,11 +4,12 @@ discard GC_disable
 
 const
   WINDOW_TITLE     = "Flare Demo"
-  WINDOW_WIDTH     = 1680
-  WINDOW_HEIGHT    = 1050
+  WINDOW_WIDTH     = 1920
+  WINDOW_HEIGHT    = 1080
   PARTICLE_IMG     = "resources/3.png"
   PARTICLE2_IMG    = "resources/2.png"
   PARTICLE3_IMG    = "resources/1.png"
+  FONT_SIZE        = 16
 
   BACKGROUND_COLOR = color(0, 0, 0, 255)
   maxParticles     = 2000
@@ -39,7 +40,7 @@ proc summonGreenGlobe(): Emitter =
 proc summonSun(): Emitter =
   result = newEmitter(
     pool         = sunPool, 
-    x            = 1000, 
+    x            = 1200, 
     y            = 500, 
     speed        = newProperty(2.0, 10, 0.5), 
     rotation     = newProperty(3.0, 10, 2.0), 
@@ -62,7 +63,7 @@ proc summonComet(): Emitter =
       alpha        = prop, 
       ttl          = newProperty(5.0, 10, 5.0), 
       maxParticles = 1000,
-      life         = newLife(true, 110)
+      life         = newLife(true, 130)
     )
 
 let
@@ -81,13 +82,13 @@ var activeLabel:  Text = new_Text("", font)
 var pooledLabel:  Text = new_Text("", font)
 var usageLabel:   Text = new_Text("Press 'q' to quit, 'f' to launch a comet, 1-2 to control emitters, 3 to detach", font)
 
-usageLabel.position  = vec2(400, 10)
+usageLabel.position  = vec2(600, 10)
 pooledLabel.position = vec2(5, 45)
 activeLabel.position = vec2(5, 25)
 
-activeLabel.characterSize = 16
-pooledLabel.characterSize = 16
-usageLabel.characterSize  = 16
+activeLabel.characterSize = FONT_SIZE
+pooledLabel.characterSize = FONT_SIZE
+usageLabel.characterSize  = FONT_SIZE
 
 while window.open:
     var 
@@ -108,7 +109,7 @@ while window.open:
                 activeEmitter = nil
               of KeyCode.F:
 
-                if(len(comets) < 3):
+                if(len(comets) < 15):
                   let comet = summonComet()
                   
                   comet.physics.rotation = 4.5
