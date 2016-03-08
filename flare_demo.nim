@@ -62,7 +62,7 @@ proc summonComet(): Emitter =
       alpha        = prop, 
       ttl          = newProperty(5.0, 10, 5.0), 
       maxParticles = 1000,
-      life         = newLife(true, 90)
+      life         = newLife(true, 110)
     )
 
 let
