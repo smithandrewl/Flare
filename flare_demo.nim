@@ -79,7 +79,7 @@ greenGlobe.physics.rotation = 0
 var font:         Font = new_Font("resources/DroidSansMono/DroidSansMono.ttf")
 var activeLabel:  Text = new_Text("", font)
 var pooledLabel:  Text = new_Text("", font)
-var usageLabel:   Text = new_Text("Press Q to quit, F to launch a comet, 1-2 to control emitters, 3 to detach", font)
+var usageLabel:   Text = new_Text("Press 'q' to quit, 'f' to launch a comet, 1-2 to control emitters, 3 to detach", font)
 
 usageLabel.position  = vec2(400, 10)
 pooledLabel.position = vec2(5, 45)
