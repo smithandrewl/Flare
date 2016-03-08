@@ -39,7 +39,7 @@ proc update*(life: Life) =
     if life.Age >= life.Ttl:
       life.IsAlive = false
     else:
-      life.Age += 1
+      inc(life.Age)
 
 proc newLife*(alive: bool; ttl: int): Life =
   result = new(Life)
@@ -65,7 +65,7 @@ proc update*(particle: Particle) =
     particle.physics.update
     particle.sprite.position = particle.physics.location
 
-    let alpha = uint8(float(particle.sprite.color.a) - (255/ particle.life.Ttl))
+    let alpha = uint8(float(particle.sprite.color.a) - (255 / particle.life.Ttl))
 
     particle.sprite.color = color(particle.sprite.color.r,  particle.sprite.color.g, particle.sprite.color.b, alpha)
     
@@ -81,7 +81,7 @@ proc newParticle*(texture: Texture, x: float; y: float): Particle =
 
   result = new(Particle)
 
-  sprite.origin   = vec2(size.x/2, size.x/2)
+  sprite.origin   = vec2(size.x / 2, size.x / 2)
   sprite.scale    = vec2(0.125, 0.125)
   result.physics  = newPhysics(x, y)
   sprite.position = result.physics.location
@@ -149,8 +149,8 @@ proc randProperty(twister: var MersenneTwister, property: Property): (float, flo
   let
     startVar:   float   = property.startValue * property.variance
     endVar:     float   = property.endValue   * property.variance
-    startValue: float   = property.startValue + (float((twister.getNum * 1000) mod int(startVar * 1000)) / 1000 )
-    endValue:   float   = property.endValue   + (float((twister.getNum * 1000) mod int(endVar * 1000)) / 100)
+    startValue: float   = property.startValue + (float((twister.getNum * 1000) mod int(startVar * 1000)) / 1000)
+    endValue:   float   = property.endValue   + (float((twister.getNum * 1000) mod int(endVar   * 1000)) / 100)
 
   result = (startValue, endValue)
 
@@ -171,7 +171,8 @@ proc update*(emitter: Emitter) =
     if particle.life.IsAlive != true:
       emitter.pool.ret(particle)
       emitter.particles.delete(i)
-      emitter.curParticles -= 1
+      dec(emitter.curParticles)
+
   if emitter.curParticles < emitter.maxParticles:
     for i in 1..min(50, emitter.maxParticles - emitter.curParticles):
       let

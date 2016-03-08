@@ -10,7 +10,8 @@ const
   PARTICLE2_IMG    = "resources/2.png"
   PARTICLE3_IMG    = "resources/1.png"
   FONT_SIZE        = 16
-
+  MAX_COMETS       = 15
+  GC_PAUSE         = 200
   BACKGROUND_COLOR = color(0, 0, 0, 255)
   maxParticles     = 2000
 let
@@ -28,9 +29,9 @@ proc summonGreenGlobe(): Emitter =
     pool = globePool, 
     x            = 600, 
     y            = 500, 
-    speed        = newProperty(5, 10, 0.7), 
-    rotation     = newProperty(10.0, 10, 30.0), 
-    size         = newProperty(0.25, 10, 0.25), 
+    speed        = newProperty(05.00, 10, 00.70), 
+    rotation     = newProperty(10.00, 10, 30.00), 
+    size         = newProperty(00.25, 10, 00.25), 
     color        = prop, 
     alpha        = prop, 
     ttl          = newProperty(4.0, 10, 10.5), 
@@ -42,8 +43,8 @@ proc summonSun(): Emitter =
     pool         = sunPool, 
     x            = 1200, 
     y            = 500, 
-    speed        = newProperty(2.0, 10, 0.5), 
-    rotation     = newProperty(3.0, 10, 2.0), 
+    speed        = newProperty(2.00, 10, 0.50), 
+    rotation     = newProperty(3.00, 10, 2.00), 
     size         = newProperty(0.25, 10, 0.25), 
     color        = prop, 
     alpha        = prop, 
@@ -56,15 +57,18 @@ proc summonComet(): Emitter =
       pool         = cometPool, 
       x            = float(mouse_getPosition().x), 
       y            = float(mouse_getPosition().y), 
-      speed        = newProperty(1.5, 10, 5.125), 
-      rotation     = newProperty(1.5, 10, 0.0125), 
-      size         = newProperty(0.25, 10, 0.5), 
+      speed        = newProperty(1.50, 10, 5.1250), 
+      rotation     = newProperty(1.50, 10, 0.0125), 
+      size         = newProperty(0.25, 10, 0.5000), 
       color        = prop, 
       alpha        = prop, 
       ttl          = newProperty(5.0, 10, 5.0), 
       maxParticles = 1000,
       life         = newLife(true, 130)
     )
+
+    result.physics.rotation = 04.5
+    result.physics.speed    = 10.0
 
 let
   greenGlobe = summonGreenGlobe()
@@ -83,8 +87,8 @@ var pooledLabel:  Text = new_Text("", font)
 var usageLabel:   Text = new_Text("Press 'q' to quit, 'f' to launch a comet, 1-2 to control emitters, 3 to detach", font)
 
 usageLabel.position  = vec2(600, 10)
-pooledLabel.position = vec2(5, 45)
-activeLabel.position = vec2(5, 25)
+pooledLabel.position = vec2(5,   45)
+activeLabel.position = vec2(5,   25)
 
 activeLabel.characterSize = FONT_SIZE
 pooledLabel.characterSize = FONT_SIZE
@@ -109,11 +113,8 @@ while window.open:
                 activeEmitter = nil
               of KeyCode.F:
 
-                if(len(comets) < 15):
+                if(len(comets) < MAX_COMETS):
                   let comet = summonComet()
-                  
-                  comet.physics.rotation = 4.5
-                  comet.physics.speed    = 10
 
                   comets.add(comet)
 
@@ -153,4 +154,4 @@ while window.open:
     window.draw(usageLabel)
     window.display()
 
-    GC_step(200, true)
+    GC_step(GC_PAUSE, true)
