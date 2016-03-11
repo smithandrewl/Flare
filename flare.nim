@@ -120,6 +120,9 @@ proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, spe
 proc ret*(pool: ParticlePool, particle: Particle) =
   pool.pool.add(particle)
 
+proc len*(pool: ParticlePool): int =
+  pool.pool.len
+
 proc newParticlePool*(texture: Texture): ParticlePool =
   result = new(ParticlePool)
 
@@ -139,7 +142,7 @@ type
     color*:        Property
     alpha*:        Property
     ttl*:          Property
-    maxParticles*: int
+    maxParticles*: int  
     curParticles:  int
     particles*:    seq[Particle]
     texture*:      Texture
@@ -176,13 +179,32 @@ proc update*(emitter: Emitter) =
   if emitter.curParticles < emitter.maxParticles:
     for i in 1..min(50, emitter.maxParticles - emitter.curParticles):
       let
-        speed:    float = randProperty(emitter.twister, emitter.speed)[0]
-        ttl:      int   = int(randProperty(emitter.twister, emitter.ttl)[0])
-        rotation: float = randProperty(emitter.twister, emitter.rotation)[0]
-        size:     float = randProperty(emitter.twister, emitter.size)[0]
-
-      emitter.particles.add(emitter.pool.borrow(emitter.physics.location.x, emitter.physics.location.y, color(255,255,255,0),  ttl, speed, rotation, size))
+        speed:    float    = randProperty(emitter.twister, emitter.speed)[0]
+        ttl:      int      = int(randProperty(emitter.twister, emitter.ttl)[0])
+        rotation: float    = randProperty(emitter.twister, emitter.rotation)[0]
+        size:     float    = randProperty(emitter.twister, emitter.size)[0]
+        
+        particle: Particle = emitter.pool.borrow(
+          emitter.physics.location.x, 
+          emitter.physics.location.y, 
+          color(255,255,255,0),  
+          ttl, 
+          speed, 
+          rotation, 
+          size
+        )
+      
+      emitter.particles.add(particle)
       emitter.curParticles += 1
+
+proc clear*(emitter: Emitter) =
+  for i, particle in emitter.particles:
+    emitter.pool.ret(particle)
+    emitter.particles.delete(i)
+    dec(emitter.curParticles)
+
+proc len*(emitter: Emitter): int =
+  emitter.particles.len
 
 proc newEmitter*(
   pool:         ParticlePool,  

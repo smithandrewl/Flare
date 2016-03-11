@@ -127,25 +127,23 @@ while window.open:
     window.clear BACKGROUND_COLOR
 
     greenGlobe.update
+    greenGlobe.draw(window)
+
     sun.update
 
+    sun.draw(window)
+    
     for i, comet in comets:
       if comet.life.IsAlive:
         comet.update
+        comet.draw window
       else:
+        comet.clear
         comets.delete(i)
 
-    greenGlobe.draw(window)
-    sun.draw(window)
+    let particleCount   = greenGlobe.len + sun.len     + sum(mapIt(comets, it.len))
+    let pooledParticles = globePool.len  + sunPool.len + cometPool.len
     
-    for comet in comets:
-      if comet.life.IsAlive:
-        comet.draw window
-
-    let particleCount   = len(greenGlobe.particles) + len(sun.particles) + sum(mapIt(comets, len(it.particles)))
-    let pooledParticles = len(greenGlobe.pool.pool) + len(sun.pool.pool) + sum(mapIt(comets, len(it.pool.pool)))
-    
-
     activeLabel.str  = "Active Particles: " & $particleCount
     pooledLabel.str  = "Pooled particles: " & $pooledParticles
     
