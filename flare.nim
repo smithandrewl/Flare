@@ -102,7 +102,7 @@ proc grow(particlePool: ParticlePool, by: int) =
       particle.life.IsAlive = true
 
       particlePool.pool.add(particle)
-
+      
 proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, speed: float, rotation: float, size: float): Particle =
   if len(pool.pool) == 0: pool.grow(10)
 
@@ -190,8 +190,7 @@ proc update*(emitter: Emitter) =
           color(255,255,255,0),  
           ttl, 
           speed, 
-          rotation, 
-          size
+          rotation, size
         )
       
       emitter.particles.add(particle)
