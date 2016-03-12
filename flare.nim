@@ -2,13 +2,15 @@ import csfml, mersenne, math, sequtils
 
 type
   Property* = ref object of RootObj
+    twister:    MersenneTwister
     startValue: float
     endValue:   float
     variance:   float
 
-proc newProperty*(startValue: float, endValue: float, variance: float): Property =
+proc newProperty*(twister: MersenneTwister, startValue: float, endValue: float, variance: float): Property =
   result = new(Property)
 
+  result.twister    = twister
   result.startValue = startValue
   result.endValue   = endValue
   result.variance   = variance
@@ -148,12 +150,12 @@ type
     texture*:      Texture
     life*:         Life
 
-proc randProperty(twister: var MersenneTwister, property: Property): (float, float) =
+proc get*(property: Property): (float, float) =
   let
     startVar:   float   = property.startValue * property.variance
     endVar:     float   = property.endValue   * property.variance
-    startValue: float   = property.startValue + (float((twister.getNum * 1000) mod int(startVar * 1000)) / 1000)
-    endValue:   float   = property.endValue   + (float((twister.getNum * 1000) mod int(endVar   * 1000)) / 100)
+    startValue: float   = property.startValue + (float((property.twister.getNum * 1000) mod int(startVar * 1000)) / 1000)
+    endValue:   float   = property.endValue   + (float((property.twister.getNum * 1000) mod int(endVar   * 1000)) / 100)
 
   result = (startValue, endValue)
 
@@ -179,10 +181,10 @@ proc update*(emitter: Emitter) =
   if emitter.curParticles < emitter.maxParticles:
     for i in 1..min(50, emitter.maxParticles - emitter.curParticles):
       let
-        speed:    float    = randProperty(emitter.twister, emitter.speed)[0]
-        ttl:      int      = int(randProperty(emitter.twister, emitter.ttl)[0])
-        rotation: float    = randProperty(emitter.twister, emitter.rotation)[0]
-        size:     float    = randProperty(emitter.twister, emitter.size)[0]
+        speed:    float    = emitter.speed.get[0]
+        ttl:      int      = int(emitter.ttl.get[0])
+        rotation: float    = emitter.rotation.get[0]
+        size:     float    = emitter.size.get[0]
         
         particle: Particle = emitter.pool.borrow(
           emitter.physics.location.x, 
