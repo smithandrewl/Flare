@@ -154,8 +154,9 @@ proc get*(property: Property): (float, float) =
   let
     startVar:   float   = property.startValue * property.variance
     endVar:     float   = property.endValue   * property.variance
-    startValue: float   = property.startValue + (float((property.twister.getNum * 1000) mod int(startVar * 1000)) / 1000)
-    endValue:   float   = property.endValue   + (float((property.twister.getNum * 1000) mod int(endVar   * 1000)) / 100)
+    sign:       float   = if (property.twister.getNum mod 2) == 1: 1 else: -1
+    startValue: float   = property.startValue + (sign * (float((property.twister.getNum * 1000) mod int(startVar * 1000)) / 1000))
+    endValue:   float   = property.endValue   + (sign * (float((property.twister.getNum * 1000) mod int(endVar   * 1000)) / 100))
 
   result = (startValue, endValue)
 
