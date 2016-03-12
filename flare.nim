@@ -1,4 +1,4 @@
-import csfml, mersenne, math, times, sequtils
+import csfml, mersenne, math, sequtils
 
 type
   Property* = ref object of RootObj
@@ -216,11 +216,13 @@ proc newEmitter*(
   alpha:        Property,
   ttl:          Property,
   maxParticles: int,
-  life:         Life = nil): Emitter =
+  life:         Life = nil,
+  twister: MersenneTwister
+): Emitter =
 
   result = new(Emitter)
 
-  result.twister      = newMersenneTwister(int(epochTime()))
+  result.twister      = twister
   result.physics      = newPhysics(x, y)
   result.maxParticles = maxParticles
   result.curParticles = 0

@@ -1,4 +1,4 @@
-import csfml, flare, mersenne, sequtils, math
+import csfml, flare, mersenne, sequtils, math, times
 
 discard GC_disable
 
@@ -23,6 +23,8 @@ let
   sunPool          = newParticlePool(texture2)
   cometPool        = newParticlePool(texture3)
   prop             = newProperty(2.7, 10, 2.9)
+  twister          = newMersenneTwister(int(epochTime()))
+
 
 proc summonGreenGlobe(): Emitter =
   result = newEmitter(
@@ -35,7 +37,8 @@ proc summonGreenGlobe(): Emitter =
     color        = prop, 
     alpha        = prop, 
     ttl          = newProperty(4.0, 10, 10.5), 
-    maxParticles = maxParticles
+    maxParticles = maxParticles,
+    twister      = twister
   )
   
 proc summonSun(): Emitter =
@@ -49,7 +52,8 @@ proc summonSun(): Emitter =
     color        = prop, 
     alpha        = prop, 
     ttl          = newProperty(50.0, 10, 2.0), 
-    maxParticles = maxParticles
+    maxParticles = maxParticles,
+    twister      = twister
   )
 
 proc summonComet(): Emitter =
@@ -64,7 +68,8 @@ proc summonComet(): Emitter =
       alpha        = prop, 
       ttl          = newProperty(5.0, 10, 5.0), 
       maxParticles = 1000,
-      life         = newLife(true, 130)
+      life         = newLife(true, 130),
+      twister      = twister
     )
 
     result.physics.rotation = 04.5
