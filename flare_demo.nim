@@ -26,6 +26,9 @@ let
   prop             = newProperty(twister, 2.7, 10, 2.9)
 
 
+# The key to the globe emitter is that the range of 
+# direction the particles can take is very wide (300 degrees)
+# causing a sphere to form.
 proc summonGreenGlobe(): Emitter =
   result = newEmitter(
     pool = globePool, 
@@ -40,7 +43,7 @@ proc summonGreenGlobe(): Emitter =
     maxParticles = maxParticles,
     twister      = twister
   )
-  
+
 proc summonSun(): Emitter =
   result = newEmitter(
     pool         = sunPool, 
@@ -56,6 +59,11 @@ proc summonSun(): Emitter =
     twister      = twister
   )
 
+# The key to the explosion animation is that
+# the time to live is high but the maximum number of particles
+# is low. This means that as the older particles head to the outside
+# of the blast radius, the emitter will have run out of particles,
+# and the center will hollow out until the entire animation fades out.
 proc summonExplosion(): Emitter =
   result = newEmitter(
     pool         = sunPool, 
@@ -63,11 +71,11 @@ proc summonExplosion(): Emitter =
     y            = 500, 
     speed        = newProperty(twister, 2.00, 10, 0.50), 
     rotation     = newProperty(twister, 3.00, 10, 10.00), 
-    size         = newProperty(twister, 0.10, 10, 0.1), 
+    size         = newProperty(twister, 0.125, 10, 2.0), 
     color        = prop, 
     alpha        = prop, 
-    ttl          = newProperty(twister, 120.0, 10, 0.0125), 
-    maxParticles = maxParticles,
+    ttl          = newProperty(twister, 80.0, 10, 0.0125), 
+    maxParticles = 1000,
     twister      = twister
   ) 
 
