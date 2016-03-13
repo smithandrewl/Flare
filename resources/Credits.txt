@@ -1,0 +1,5 @@
+Background Image:
+  Author: Scott Wylie
+  URL: https://www.flickr.com/photos/scotbot/9683214865
+  License: https://creativecommons.org/licenses/by/2.0/
+  State: Modified from the original

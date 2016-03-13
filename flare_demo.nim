@@ -9,6 +9,8 @@ const
   PARTICLE_IMG     = "resources/3.png"
   PARTICLE2_IMG    = "resources/2.png"
   PARTICLE3_IMG    = "resources/1.png"
+  BACKGROUND_IMG   = "resources/bg.jpg"
+
   FONT_SIZE        = 16
   MAX_COMETS       = 15
   GC_PAUSE         = 200
@@ -19,11 +21,13 @@ let
   texture          = new_texture(PARTICLE_IMG)
   texture2         = new_texture(PARTICLE2_IMG)
   texture3         = new_texture(PARTICLE3_IMG)
+  bgTexture        = new_texture(BACKGROUND_IMG)
   globePool        = newParticlePool(texture)
   sunPool          = newParticlePool(texture2)
   cometPool        = newParticlePool(texture3)
   twister          = newMersenneTwister(int(epochTime()))
   prop             = newProperty(twister, 2.7, 10, 2.9)
+  bgSprite         = new_sprite(bgTexture)
 
 
 # The key to the globe emitter is that the range of 
@@ -155,6 +159,7 @@ while window.open:
               activeEmitter.physics.location  = mouse_getPosition()
     window.clear BACKGROUND_COLOR
 
+    window.draw(bgSprite)
     greenGlobe.update
     greenGlobe.draw(window)
     sun.update
