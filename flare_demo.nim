@@ -83,6 +83,22 @@ proc summonExplosion(): Emitter =
     twister      = twister
   ) 
 
+proc summonExhaust(): Emitter =
+  result = newEmitter(
+    pool         = sunPool, 
+    x            = 1700, 
+    y            = 500, 
+    speed        = newProperty(twister, 7.00, 10, 0.50), 
+    rotation     = newProperty(twister, 1.55, 10, 0.0125), 
+    size         = newProperty(twister, 0.125, 10, 1.0), 
+    color        = prop, 
+    alpha        = prop, 
+    ttl          = newProperty(twister, 25.0, 10, 0.0125), 
+    maxParticles = 2000,
+    twister      = twister
+  ) 
+
+
 proc summonComet(): Emitter =
     result = newEmitter(
       pool         = cometPool, 
@@ -106,6 +122,7 @@ let
   greenGlobe = summonGreenGlobe()
   sun        = summonSun()
   explosion  = summonExplosion()
+  exhaust    = summonExhaust()
 
 var comets:        seq[Emitter] = @[]
 var activeEmitter: Emitter      = nil
@@ -166,6 +183,8 @@ while window.open:
     sun.draw(window)
     explosion.update
     explosion.draw(window)
+    exhaust.update
+    exhaust.draw(window)
     
     for i, comet in comets:
       if comet.life.IsAlive:
