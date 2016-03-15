@@ -1,4 +1,4 @@
-import csfml, mersenne, math, sequtils
+import csfml, mersenne, math, sequtils, lists
 
 type
   Property* = ref object of RootObj
@@ -93,6 +93,9 @@ proc newParticle*(texture: Texture, x: float; y: float): Particle =
 type
   ParticlePool* = ref object of RootObj
     pool*:    seq[Particle]
+    count:    int
+    freeList: DoublyLinkedList[Particle]
+
     texture*: Texture
 
 proc grow(particlePool: ParticlePool, by: int) =
@@ -104,11 +107,15 @@ proc grow(particlePool: ParticlePool, by: int) =
       particle.life.IsAlive = true
 
       particlePool.pool.add(particle)
+      particlePool.freeList.prepend(particle)
+      inc(particlePool.count)
       
 proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, speed: float, rotation: float, size: float): Particle =
-  if len(pool.pool) == 0: pool.grow(10)
+  if pool.count == 0: pool.grow(10)
 
-  result = pool.pool.pop
+  dec(pool.count)
+  result = pool.freeList.head.value
+  pool.freeList.remove(pool.freeList.head)
 
   result.physics.location = vec2(x, y)
   result.physics.rotation = rotation
@@ -120,18 +127,20 @@ proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, spe
   result.sprite.scale     = vec2(size, size)
 
 proc ret*(pool: ParticlePool, particle: Particle) =
-  pool.pool.add(particle)
+  pool.freeList.prepend(particle)
+  inc(pool.count)
 
 proc len*(pool: ParticlePool): int =
-  pool.pool.len
+  pool.count
 
 proc newParticlePool*(texture: Texture): ParticlePool =
   result = new(ParticlePool)
 
   result.pool    = @[]
+  result.freeList = initDoublyLinkedList[Particle]()
   result.texture = texture
-
-  result.grow(500)
+  result.count = 0
+  result.grow(100)
 
 type
   Emitter* = ref object of RootObj
@@ -196,8 +205,9 @@ proc update*(emitter: Emitter) =
           rotation, size
         )
       
-      emitter.particles.add(particle)
-      emitter.curParticles += 1
+      if particle != nil:
+        emitter.particles.add(particle)
+        inc(emitter.curParticles)
 
 proc clear*(emitter: Emitter) =
   for i, particle in emitter.particles:
