@@ -11,7 +11,7 @@ const
   PARTICLE3_IMG    = "resources/1.png"
   BACKGROUND_IMG   = "resources/bg.jpg"
 
-  FONT_SIZE        = 16
+  FONT_SIZE        = 18
   MAX_COMETS       = 15
   GC_PAUSE         = 200
   BACKGROUND_COLOR = color(0, 0, 0, 255)
@@ -111,7 +111,7 @@ proc summonComet(): Emitter =
       alpha        = prop, 
       ttl          = newProperty(twister, 5.0, 10, 5.0), 
       maxParticles = 1000,
-      life         = newLife(true, 130),
+      life         = newLife(true, true, 130),
       twister      = twister
     )
 
@@ -144,6 +144,7 @@ activeLabel.characterSize = FONT_SIZE
 pooledLabel.characterSize = FONT_SIZE
 usageLabel.characterSize  = FONT_SIZE
 
+window.mouseCursorVisible = true
 while window.open:
     var 
       event: Event

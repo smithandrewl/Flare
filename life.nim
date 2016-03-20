@@ -11,7 +11,7 @@ proc update*(life: Life) =
     else:
       inc(life.Age)
 
-proc newLife*(alive: bool; ttl: int): Life =
+proc newLife*(alive: bool; livesForever: bool = true, ttl: int = 0): Life =
   result = new(Life)
 
   result.IsAlive = alive

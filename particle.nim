@@ -1,6 +1,5 @@
 import physics, life, csfml, lists, mersenne, util
 
-
 type
   Particle* = ref object of RootObj
     physics*: Physics
@@ -38,7 +37,7 @@ proc newParticle*(texture: Texture, x: float; y: float): Particle =
   sprite.scale    = vec2(0.125, 0.125)
   result.physics  = newPhysics(x, y)
   sprite.position = result.physics.location
-  result.life     = newLife(true, 255)
+  result.life     = newLife(true, false, 255)
   result.sprite   = sprite
 
 type
