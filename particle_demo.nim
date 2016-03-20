@@ -3,7 +3,7 @@ import csfml, flare, mersenne, sequtils, math, times
 discard GC_disable
 
 const
-  WINDOW_TITLE     = "Flare Demo"
+  WINDOW_TITLE     = "Flare Particle FX Demo"
   WINDOW_WIDTH     = 1920
   WINDOW_HEIGHT    = 1080
   PARTICLE_IMG     = "resources/3.png"
