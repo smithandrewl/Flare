@@ -3,3 +3,8 @@ Background Image:
   URL: https://www.flickr.com/photos/scotbot/9683214865
   License: https://creativecommons.org/licenses/by/2.0/
   State: Modified from the original
+Ship:
+  Author: JM.Atencia
+  URL: http://opengameart.org/content/rocket
+  License: http://creativecommons.org/licenses/by/3.0/
+  State: Not modified
