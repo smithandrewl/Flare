@@ -86,8 +86,8 @@ proc len*(pool: ParticlePool): int =
 proc newParticlePool*(texture: Texture): ParticlePool =
   result = new(ParticlePool)
 
-  result.pool    = @[]
+  result.pool     = @[]
   result.freeList = initDoublyLinkedList[Particle]()
-  result.texture = texture
-  result.count = 0
+  result.texture  = texture
+  result.count    = 0
   result.grow(100)

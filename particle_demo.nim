@@ -1,128 +1,26 @@
-import csfml, flare, mersenne, sequtils, math, times
+import csfml, flare, mersenne, sequtils, math, times, stock_emitters
 
 discard GC_disable
 
 const
   WINDOW_TITLE     = "Flare Particle FX Demo"
+  BACKGROUND_IMG   = "resources/bg.jpg"
   WINDOW_WIDTH     = 1920
   WINDOW_HEIGHT    = 1080
-  PARTICLE_IMG     = "resources/3.png"
-  PARTICLE2_IMG    = "resources/2.png"
-  PARTICLE3_IMG    = "resources/1.png"
-  BACKGROUND_IMG   = "resources/bg.jpg"
-
   FONT_SIZE        = 18
-  MAX_COMETS       = 15
   GC_PAUSE         = 200
+  MAX_COMETS       = 15
   BACKGROUND_COLOR = color(0, 0, 0, 255)
-  maxParticles     = 2000
-let
-  window           = new_RenderWindow(video_mode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE)
-  texture          = new_texture(PARTICLE_IMG)
-  texture2         = new_texture(PARTICLE2_IMG)
-  texture3         = new_texture(PARTICLE3_IMG)
-  bgTexture        = new_texture(BACKGROUND_IMG)
-  globePool        = newParticlePool(texture)
-  sunPool          = newParticlePool(texture2)
-  cometPool        = newParticlePool(texture3)
-  twister          = newMersenneTwister(int(epochTime()))
-  prop             = newProperty(twister, 2.7, 10, 2.9)
-  bgSprite         = new_sprite(bgTexture)
-
-
-# The key to the globe emitter is that the range of 
-# direction the particles can take is very wide (300 degrees)
-# causing a sphere to form.
-proc summonGreenGlobe(): Emitter =
-  result = newEmitter(
-    pool = globePool, 
-    x            = 300, 
-    y            = 500, 
-    speed        = newProperty(twister, 05.00, 10, 00.70), 
-    rotation     = newProperty(twister, 10.00, 10, 30.00), 
-    size         = newProperty(twister, 00.25, 10, 00.25), 
-    color        = prop, 
-    alpha        = prop, 
-    ttl          = newProperty(twister, 4.0, 10, 10.5), 
-    maxParticles = maxParticles,
-    twister      = twister
-  )
-
-proc summonSun(): Emitter =
-  result = newEmitter(
-    pool         = sunPool, 
-    x            = 900, 
-    y            = 500, 
-    speed        = newProperty(twister, 2.00, 10, 0.50), 
-    rotation     = newProperty(twister, 3.00, 10, 2.00), 
-    size         = newProperty(twister, 0.25, 10, 0.25), 
-    color        = prop, 
-    alpha        = prop, 
-    ttl          = newProperty(twister, 50.0, 10, 2.0), 
-    maxParticles = maxParticles,
-    twister      = twister
-  )
-
-# The key to the explosion animation is that
-# the time to live is high but the maximum number of particles
-# is low. This means that as the older particles head to the outside
-# of the blast radius, the emitter will have run out of particles,
-# and the center will hollow out until the entire animation fades out.
-proc summonExplosion(): Emitter =
-  result = newEmitter(
-    pool         = sunPool, 
-    x            = 1500, 
-    y            = 500, 
-    speed        = newProperty(twister, 2.00, 10, 0.50), 
-    rotation     = newProperty(twister, 3.00, 10, 10.00), 
-    size         = newProperty(twister, 0.125, 10, 2.0), 
-    color        = prop, 
-    alpha        = prop, 
-    ttl          = newProperty(twister, 80.0, 10, 0.0125), 
-    maxParticles = 1000,
-    twister      = twister
-  ) 
-
-proc summonExhaust(): Emitter =
-  result = newEmitter(
-    pool         = sunPool, 
-    x            = 1700, 
-    y            = 500, 
-    speed        = newProperty(twister, 7.00, 10, 0.50), 
-    rotation     = newProperty(twister, 1.55, 10, 0.0125), 
-    size         = newProperty(twister, 0.125, 10, 1.0), 
-    color        = prop, 
-    alpha        = prop, 
-    ttl          = newProperty(twister, 25.0, 10, 0.0125), 
-    maxParticles = 2000,
-    twister      = twister
-  ) 
-
-
-proc summonComet(): Emitter =
-    result = newEmitter(
-      pool         = cometPool, 
-      x            = float(mouse_getPosition().x), 
-      y            = float(mouse_getPosition().y), 
-      speed        = newProperty(twister, 1.50, 10, 5.1250), 
-      rotation     = newProperty(twister, 1.50, 10, 0.0125), 
-      size         = newProperty(twister, 0.25, 10, 0.5000), 
-      color        = prop, 
-      alpha        = prop, 
-      ttl          = newProperty(twister, 5.0, 10, 5.0), 
-      maxParticles = 1000,
-      life         = newLife(true, true, 130),
-      twister      = twister
-    )
-
-    result.physics.rotation = 04.5
-    result.physics.speed    = 10.0
 
 let
-  greenGlobe = summonGreenGlobe()
-  sun        = summonSun()
-  explosion  = summonExplosion()
-  exhaust    = summonExhaust()
+  window     = new_RenderWindow(video_mode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_TITLE)
+  bgTexture  = new_texture(BACKGROUND_IMG)
+  bgSprite   = new_sprite(bgTexture)
+
+  greenGlobe = summonGreenGlobe(300, 500)
+  sun        = summonSun(900, 500)
+  explosion  = summonExplosion(1500, 500)
+  exhaust    = summonExhaust(1700, 500)
 
 var comets:        seq[Emitter] = @[]
 var activeEmitter: Emitter      = nil
@@ -165,7 +63,7 @@ while window.open:
               of KeyCode.F:
 
                 if(len(comets) < MAX_COMETS):
-                  let comet = summonComet()
+                  let comet = summonComet(float(mouse_getPosition().x), float(mouse_getPosition().y))
 
                   comets.add(comet)
 
@@ -176,14 +74,17 @@ while window.open:
             if activeEmitter != nil:
               activeEmitter.physics.location  = mouse_getPosition()
     window.clear BACKGROUND_COLOR
-
     window.draw(bgSprite)
+
     greenGlobe.update
     greenGlobe.draw(window)
+
     sun.update
     sun.draw(window)
+    
     explosion.update
     explosion.draw(window)
+    
     exhaust.update
     exhaust.draw(window)
     
