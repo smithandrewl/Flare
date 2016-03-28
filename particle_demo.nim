@@ -20,7 +20,7 @@ let
   # Summon the emitters to their places on screen
   greenGlobe = summonGreenGlobe(300, 500)
   sun        = summonSun(900, 500)
-  explosion  = summonExplosion(1500, 500)
+  explosion  = summonExplosion(1400, 500)
   exhaust    = summonExhaust(1700, 500)
 
 var comets:        seq[Emitter] = @[]
