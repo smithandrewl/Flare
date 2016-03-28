@@ -1,5 +1,12 @@
 import csfml, particle, mersenne, times, util, emitter, life
 
+#
+# A set of stock emitters that can be used.
+#
+# Each emitter can be created by calling the procedure for that emitter with
+# an x and y location where that emitter should be drawn.
+# 
+
 const
   PARTICLE_IMG  = "resources/3.png"
   PARTICLE2_IMG = "resources/2.png"
@@ -33,6 +40,10 @@ proc summonGreenGlobe*(x: float, y: float): Emitter =
     twister      = twister
   )
 
+# The key to the sun is that there is a large variation in the size of 
+# the particles as they are spawned, and then they get smaller as they travel
+# farther away from the center point of the emitter.
+# This causes the rays to appear to flutter and pulse.
 proc summonSun*(x: float, y: float): Emitter =
   result = newEmitter(
     pool         = sunPool, 
@@ -67,7 +78,9 @@ proc summonExplosion*(x: float, y: float): Emitter =
     maxParticles = 1000,
     twister      = twister
   ) 
-
+# The exhaust emitter works by shooting particles straight down with a medium velocity and a short lifetime.
+# Because the lifetime is short, the particles get smaller very quickly, causing a teardrop shape which works
+# as an exhaust animation.
 proc summonExhaust*(x: float, y: float): Emitter =
   result = newEmitter(
     pool         = sunPool, 

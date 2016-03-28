@@ -1,5 +1,8 @@
+
 import mersenne
 
+# The property object represents a number that 
+# can vary (higher than or lower than the original) by an amount specified. 
 type
   Property* = ref object of RootObj
     twister:    MersenneTwister
@@ -7,6 +10,7 @@ type
     endValue:   float
     variance:   float
 
+# Creates a new Property instance
 proc newProperty*(twister: MersenneTwister, startValue: float, endValue: float, variance: float): Property =
   result = new(Property)
 
@@ -14,7 +18,8 @@ proc newProperty*(twister: MersenneTwister, startValue: float, endValue: float, 
   result.startValue = startValue
   result.endValue   = endValue
   result.variance   = variance
-  
+
+# Returns a value that varies from the original by up to the amount specified in "variance"
 proc get*(property: Property): (float, float) =
   let
     startVar:   float   = property.startValue * property.variance
