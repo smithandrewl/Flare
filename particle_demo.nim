@@ -98,7 +98,7 @@ while window.open:
         comet.clear
         comets.delete(i)
 
-    let particleCount   = greenGlobe.len + sun.len     + sum(mapIt(comets, it.len))
+    let particleCount   = greenGlobe.len + sun.len     + explosion.len + exhaust.len + sum(mapIt(comets, it.len))
     let pooledParticles = globePool.len  + sunPool.len + cometPool.len
     
     activeLabel.str  = "Active Particles: " & $particleCount
