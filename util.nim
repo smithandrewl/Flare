@@ -1,5 +1,5 @@
 
-import mersenne
+import mersenne, math
 
 type
   Property* = ref object of RootObj
@@ -33,3 +33,12 @@ proc get*(property: Property): (float, float) =
     endValue:   float   = property.endValue   + (sign * (float((property.twister.getNum * 1000) mod int(endVar   * 1000)) / 100))
 
   result = (startValue, endValue)
+
+proc distance*(x1: float, y1: float, x2: float, y2: float): float =
+  ## Returns the distance between two points.
+
+  let 
+    xDiff = x2-x1
+    yDiff = y2-y1
+    
+  abs(sqrt(xDiff * xDiff + yDiff * yDiff))
