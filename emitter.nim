@@ -1,9 +1,13 @@
 import csfml, mersenne, math, sequtils, lists, particle, life, physics, util
 
-# The emitter has a fixed point where it spawns particles having their own physics.  
-# The emitter itself has a lifetime and physics which can be used to move the emitter
 type
   Emitter* = ref object of RootObj
+    ## The emitter emits particles having velocity and a limited lifetime 
+    ## from a fixed point.  
+    ##
+    ## The emitter itself has a lifetime and physics which can be used to 
+    ## move the emitter.
+
     pool*:         ParticlePool
     physics*:      Physics
     twister:       MersenneTwister
@@ -20,13 +24,13 @@ type
     life*:         Life
 
 proc draw*(emitter: Emitter, render: RenderWindow) =
+  ## Draws all of the active particles emitted by `emitter` to the screen.
+
   for particle in emitter.particles:
     particle.draw render
 
-# Update each of the particles and return them to the pool if they have died
-# If we have run low on particles, borrow some more from the pool
 proc update*(emitter: Emitter) =
-  
+  ## Update each of the active particles emitted by `emitter`.
   if emitter.life != nil:
     emitter.life.update
 
@@ -61,8 +65,9 @@ proc update*(emitter: Emitter) =
         emitter.particles.add(particle)
         inc(emitter.curParticles)
 
-# Returns all of the particles to the pool and clears the local sequence
+
 proc clear*(emitter: Emitter) =
+  ## Returns all of the particles to the pool and clears the local sequence
   for i, particle in emitter.particles:
     emitter.pool.ret(particle)
     emitter.particles.delete(i)
@@ -71,7 +76,6 @@ proc clear*(emitter: Emitter) =
 proc len*(emitter: Emitter): int =
   emitter.particles.len
 
-# Returns a new instance of Emitter
 proc newEmitter*(
   pool:         ParticlePool,  
   x:            float,
@@ -86,7 +90,7 @@ proc newEmitter*(
   life:         Life = nil,
   twister: MersenneTwister
 ): Emitter =
-
+  ## Returns a new instance of Emitter
   result = new(Emitter)
 
   result.twister      = twister

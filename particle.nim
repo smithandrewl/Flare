@@ -2,18 +2,22 @@ import physics, life, csfml, lists, mersenne, util
 
 type
 
-  # Represents a single particle with physics and a lifetime
   Particle* = ref object of RootObj
+    ## Represents a single particle with physics and a lifetime.
+
     physics*: Physics
     life*:    Life
     sprite*:  Sprite
     texture*: Texture
 
 proc draw*(particle: Particle, render: RenderWindow) =
+  ## Draws the particle to the screen.
+
   render.draw(particle.sprite, renderStates(BlendAdd))
 
 
 proc update*(particle: Particle) =
+  ## Updates the current state of the particle.
 
   # Update the life component (increments the age and marks as dead)
   particle.life.update
@@ -34,8 +38,10 @@ proc update*(particle: Particle) =
 
     particle.sprite.scale = vec2(size, size)
 
-# Creates a new Particle instance
+
 proc newParticle*(texture: Texture, x: float; y: float): Particle =
+  ## Creates a new Particle instance
+
   let
     sprite: Sprite = new_Sprite(texture)
     size           = texture.size
@@ -50,16 +56,19 @@ proc newParticle*(texture: Texture, x: float; y: float): Particle =
   result.sprite   = sprite
 
 type
-  # Holds unused or dead particles to keep them in memory,
-  # This prevents the garbage collector from running every time a particle dies.
   ParticlePool* = ref object of RootObj
+    ## Holds unused or dead particles to keep them in memory,
+    ## preventing the garbage collector from running every time a particle dies.
+
     pool*:    seq[Particle]
     count:    int
     freeList: DoublyLinkedList[Particle] # This list contains the items in "pool" that are unused
 
     texture*: Texture
-# Increases the number of particles in the pool by allocating and storing new particle instances.
+
 proc grow(particlePool: ParticlePool, by: int) =
+    ## Increases the number of particles in the pool by allocating and storing new particle instances.
+
     for i in 1..by:
       let particle: Particle = newParticle(particlePool.texture, 0, 0)
 
@@ -71,8 +80,10 @@ proc grow(particlePool: ParticlePool, by: int) =
       particlePool.freeList.prepend(particle)
       inc(particlePool.count)
       
-# Takes a particle out of the pool and returns it with the specified values
+
 proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, speed: float, rotation: float, size: float): Particle =
+  ## Takes a particle out of `pool` and returns it with the specified values.
+  
   if pool.count == 0: pool.grow(10)
 
   dec(pool.count)
@@ -88,16 +99,19 @@ proc borrow*(pool: ParticlePool, x: float, y: float, color: Color, ttl: int, spe
   result.sprite.color     = color
   result.sprite.scale     = vec2(size, size)
 
-# Returns a particle to the pool
 proc ret*(pool: ParticlePool, particle: Particle) =
+  ## Returns a particle to `pool`.
+
   pool.freeList.prepend(particle)
   inc(pool.count)
 
 proc len*(pool: ParticlePool): int =
+  ## The number of unused particles in `pool`.
   pool.count
 
-# Creates a new ParticlePool instance
 proc newParticlePool*(texture: Texture): ParticlePool =
+  ## Creates a new ParticlePool instance
+  
   result = new(ParticlePool)
 
   result.pool     = @[]
