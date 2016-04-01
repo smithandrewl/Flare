@@ -17,9 +17,10 @@ let
   bgTexture  = new_texture(BACKGROUND_IMG)
   bgSprite   = new_sprite(bgTexture)
 
+  # Summon the emitters to their places on screen
   greenGlobe = summonGreenGlobe(300, 500)
   sun        = summonSun(900, 500)
-  explosion  = summonExplosion(1500, 500)
+  explosion  = summonExplosion(1400, 500)
   exhaust    = summonExhaust(1700, 500)
 
 var comets:        seq[Emitter] = @[]
@@ -53,15 +54,15 @@ while window.open:
           of EventType.KeyPressed:
             case event.key.code
               of KeyCode.Num1:
-                activeEmitter = greenGlobe
+                activeEmitter = greenGlobe # The mouse controls the greenGlobe
                 mouse_setPosition(vec2(int(activeEmitter.physics.location.x), int(activeEmitter.physics.location.y)))
               of KeyCode.Num2:
-                activeEmitter = sun
+                activeEmitter = sun # The mouse controls the sun
                 mouse_setPosition(vec2(int(activeEmitter.physics.location.x), int(activeEmitter.physics.location.y)))
               of KeyCode.Num3:
-                activeEmitter = nil
+                activeEmitter = nil # The mouse controls nothing
               of KeyCode.F:
-
+                # Summon comets to the screen up to a limit
                 if(len(comets) < MAX_COMETS):
                   let comet = summonComet(float(mouse_getPosition().x), float(mouse_getPosition().y))
 
@@ -70,9 +71,10 @@ while window.open:
               of KeyCode.Q:
                 window.close()
               else: discard
-          else:
+          else:  # Tie the active emitters location to the mouses location
             if activeEmitter != nil:
               activeEmitter.physics.location  = mouse_getPosition()
+
     window.clear BACKGROUND_COLOR
     window.draw(bgSprite)
 
@@ -96,7 +98,7 @@ while window.open:
         comet.clear
         comets.delete(i)
 
-    let particleCount   = greenGlobe.len + sun.len     + sum(mapIt(comets, it.len))
+    let particleCount   = greenGlobe.len + sun.len     + explosion.len + exhaust.len + sum(mapIt(comets, it.len))
     let pooledParticles = globePool.len  + sunPool.len + cometPool.len
     
     activeLabel.str  = "Active Particles: " & $particleCount
@@ -107,4 +109,5 @@ while window.open:
     window.draw(usageLabel)
     window.display()
 
-    GC_step(GC_PAUSE, true)
+    GC_step(GC_PAUSE, true) # After rendering a frame, tell the garbage collector 
+                            # it can free memory for a short period of time.

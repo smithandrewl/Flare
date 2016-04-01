@@ -1,3 +1,9 @@
+##
+## A set of stock emitters that can be used.
+##
+## Each emitter can be created by calling the procedure for that emitter with
+## an x and y location where that emitter should be drawn.
+## 
 import csfml, particle, mersenne, times, util, emitter, life
 
 const
@@ -15,10 +21,11 @@ let
   sunPool*      = newParticlePool(redTexture)
   cometPool*    = newParticlePool(blueTexture)
 
-# The key to the globe emitter is that the range of 
-# direction the particles can take is very wide (300 degrees)
-# causing a sphere to form.
+  # The key to the globe emitter is that the range of 
+  # direction the particles can take is very wide (300 degrees)
+  # causing a sphere to form.
 proc summonGreenGlobe*(x: float, y: float): Emitter =
+  ## Summons a green globe to the screen.
   result = newEmitter(
     pool = globePool, 
     x            = x, 
@@ -33,7 +40,12 @@ proc summonGreenGlobe*(x: float, y: float): Emitter =
     twister      = twister
   )
 
+# The key to the sun is that there is a large variation in the size of 
+# the particles as they are spawned, and then they get smaller as they travel
+# farther away from the center point of the emitter.
+# This causes the rays to appear to flutter and pulse.
 proc summonSun*(x: float, y: float): Emitter =
+  ## Summons a red "sun" with pulsing "rays" to the screen.
   result = newEmitter(
     pool         = sunPool, 
     x            = x, 
@@ -54,6 +66,7 @@ proc summonSun*(x: float, y: float): Emitter =
 # of the blast radius, the emitter will have run out of particles,
 # and the center will hollow out until the entire animation fades out.
 proc summonExplosion*(x: float, y: float): Emitter =
+  ## Summons a red explosion animation to the screen.
   result = newEmitter(
     pool         = sunPool, 
     x            = x, 
@@ -67,8 +80,12 @@ proc summonExplosion*(x: float, y: float): Emitter =
     maxParticles = 1000,
     twister      = twister
   ) 
-
+  
+# The exhaust emitter works by shooting particles straight down with a medium velocity and a short lifetime.
+# Because the lifetime is short, the particles get smaller very quickly, causing a teardrop shape which works
+# as an exhaust animation.
 proc summonExhaust*(x: float, y: float): Emitter =
+  ## Summons an animated afterburner/exhaust flame to the screen.
   result = newEmitter(
     pool         = sunPool, 
     x            = x, 
@@ -84,6 +101,7 @@ proc summonExhaust*(x: float, y: float): Emitter =
   ) 
 
 proc summonComet*(x: float, y: float): Emitter =
+    ## Summons a moving blue comet to the screen.
     result = newEmitter(
       pool         = cometPool, 
       x            = x, 
