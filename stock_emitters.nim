@@ -100,6 +100,36 @@ proc summonExhaust*(x: float, y: float): Emitter =
     twister      = twister
   ) 
 
+proc summonExhaustSmall*(x: float, y: float): Emitter =
+  result = newEmitter(
+    pool         = sunPool, 
+    x            = x, 
+    y            = y, 
+    speed        = newProperty(5.00, 00.01250), 
+    rotation     = newProperty(01.550, 00.1250), 
+    size         = newProperty(00.125, 00.125), 
+    color        = prop, 
+    alpha        = prop, 
+    ttl          = newProperty(48.0,  01.00), 
+    maxParticles = maxParticles,
+    twister      = twister
+  )
+
+proc summonExhaustLarge*(x: float, y: float): Emitter =
+  result = newEmitter(
+    pool         = cometPool, 
+    x            = x, 
+    y            = y, 
+    speed        = newProperty(10.00, 00.01250), 
+    rotation     = newProperty(01.550, 00.1250), 
+    size         = newProperty(00.25, 00.25), 
+    color        = prop, 
+    alpha        = prop, 
+    ttl          = newProperty(28.0,  01.00), 
+    maxParticles = maxParticles,
+    twister      = twister
+  )
+
 proc summonComet*(x: float, y: float): Emitter =
     ## Summons a moving blue comet to the screen.
     result = newEmitter(

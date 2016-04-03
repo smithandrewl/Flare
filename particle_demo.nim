@@ -18,10 +18,12 @@ let
   bgSprite   = new_sprite(bgTexture)
 
   # Summon the emitters to their places on screen
-  greenGlobe = summonGreenGlobe(300, 500)
-  sun        = summonSun(900, 500)
-  explosion  = summonExplosion(1400, 500)
-  exhaust    = summonExhaust(1700, 500)
+  greenGlobe   = summonGreenGlobe(300, 300)
+  sun          = summonSun(900, 300)
+  explosion    = summonExplosion(1400, 300)
+  exhaust      = summonExhaust(900, 600)
+  smallExhaust = summonExhaustSmall(600, 600)
+  largeExhaust = summonExhaustLarge(300, 600)
 
 var comets:        seq[Emitter] = @[]
 var activeEmitter: Emitter      = nil
@@ -86,6 +88,12 @@ while window.open:
     
     explosion.update
     explosion.draw(window)
+
+    smallExhaust.update
+    smallExhaust.draw(window)
+
+    largeExhaust.update
+    largeExhaust.draw(window)
     
     exhaust.update
     exhaust.draw(window)
@@ -98,7 +106,7 @@ while window.open:
         comet.clear
         comets.delete(i)
 
-    let particleCount   = greenGlobe.len + sun.len     + explosion.len + exhaust.len + sum(mapIt(comets, it.len))
+    let particleCount   = greenGlobe.len + sun.len     + explosion.len + exhaust.len + smallExhaust.len + largeExhaust.len + sum(mapIt(comets, it.len))
     let pooledParticles = globePool.len  + sunPool.len + cometPool.len
     
     activeLabel.str  = "Active Particles: " & $particleCount
