@@ -47,10 +47,10 @@ proc update*(emitter: Emitter) =
   if emitter.curParticles < emitter.maxParticles:
     for i in 1..min(50, emitter.maxParticles - emitter.curParticles):
       let
-        speed:    float    = emitter.speed.get[0]
-        ttl:      int      = int(emitter.ttl.get[0])
-        rotation: float    = emitter.rotation.get[0]
-        size:     float    = emitter.size.get[0]
+        speed:    float    = emitter.speed.get
+        ttl:      int      = int(emitter.ttl.get)
+        rotation: float    = emitter.rotation.get
+        size:     float    = emitter.size.get
         
         particle: Particle = emitter.pool.borrow(
           emitter.physics.location.x, 
