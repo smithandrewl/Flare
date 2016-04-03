@@ -6,4 +6,4 @@ The framework currently consists of:
  * A Particle effects demo
   
 ### Screenshots:
-![Image](http://imgur.com/QUP675G.png?raw=true)
+![Image](http://imgur.com/QmEQ5eh.png?raw=true)
