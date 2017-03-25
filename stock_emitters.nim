@@ -15,7 +15,7 @@ let
   greenTexture  = new_texture(PARTICLE_IMG)
   redTexture    = new_texture(PARTICLE2_IMG)
   blueTexture   = new_texture(PARTICLE3_IMG)
-  twister       = newMersenneTwister(int(epochTime()))
+  twister       = newMersenneTwister(uint32(epochTime()))
   prop          = newProperty(2.7, 2.9)
   globePool*    = newParticlePool(greenTexture)
   sunPool*      = newParticlePool(redTexture)

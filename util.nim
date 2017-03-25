@@ -25,7 +25,7 @@ proc get*(property: Property, twister: var MersenneTwister): float =
   let
     startVar:   float   = property.startValue * property.variance
     sign:       float   = if (twister.getNum mod 2) == 1: 1 else: -1
-    startValue: float   = property.startValue + (sign * (float((twister.getNum * 1000) mod int(startVar * 1000)) / 1000))
+    startValue: float   = property.startValue + (sign * (float(int(twister.getNum * 1000) mod int(startVar * 1000)) / 1000))
   
   result = startValue
 

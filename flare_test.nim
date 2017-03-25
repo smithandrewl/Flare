@@ -4,28 +4,28 @@ import csfml
 
 suite "Life tests":
   test "Life: Constructor":
-    let life = newLife(false, 20)
+    let life = newLife(false, ttl = 20)
 
     require(life.Age     == 0)
     require(life.IsAlive == false)
     require(life.Ttl     == 20)
 
   test "Life: Age updates by one each step":
-    let life: Life = newLife(true, 110)
+    let life: Life = newLife(true, ttl=110)
     
     life.update
 
     require(life.Age == 1)
   
   test "Life: Still alive after a step":
-    let life: Life = newLife(true, 1)
+    let life: Life = newLife(true, ttl=1)
 
     life.update
 
     require(life.IsAlive == true)
 
   test "Life: Death when age is greater than time to live":
-    let life = newLife(true, 1)
+    let life = newLife(true, ttl=1)
 
     life.update
     life.update
