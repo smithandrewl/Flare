@@ -1,2 +1,2 @@
-nim c -d:csfmlNoDestructors  --define:useRealtimeGC  particle_demo.nim
-nim c -d:csfmlNoDestructors  --define:useRealtimeGC  flare_test.nim
+nim c  -d:csfmlNoDestructors -d:release  --define:useRealtimeGC particle_demo.nim
+#nim c -d:csfmlNoDestructors  --define:useRealtimeGC  flare_test.nim
