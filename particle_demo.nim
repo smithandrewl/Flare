@@ -35,7 +35,7 @@ greenGlobe.physics.rotation = 0
 var font:         Font = new_Font("resources/DroidSansMono/DroidSansMono.ttf")
 var activeLabel:  Text = new_Text("", font)
 var pooledLabel:  Text = new_Text("", font)
-var usageLabel:   Text = new_Text("Press 'q' to quit, 'f' to launch a comet, 1-2 to control emitters, 3 to detach", font)
+var usageLabel:   Text = new_Text("Press 'q' to quit, 'f' to launch a comet, 1-6 to control emitters, 7 to detach", font)
 
 usageLabel.position  = vec2(600, 10)
 pooledLabel.position = vec2(5,   45)
@@ -62,6 +62,19 @@ while window.open:
                 activeEmitter = sun # The mouse controls the sun
                 mouse_setPosition(vec2(int(activeEmitter.physics.location.x), int(activeEmitter.physics.location.y)))
               of KeyCode.Num3:
+                activeEmitter = explosion
+                mouse_setPosition(vec2(int(activeEmitter.physics.location.x), int(activeEmitter.physics.location.y)))
+              of KeyCode.Num6:
+                activeEmitter = exhaust
+                mouse_setPosition(vec2(int(activeEmitter.physics.location.x), int(activeEmitter.physics.location.y)))
+              of KeyCode.Num4:
+                activeEmitter = largeExhaust
+                mouse_setPosition(vec2(int(activeEmitter.physics.location.x), int(activeEmitter.physics.location.y)))
+              of KeyCode.Num5:
+                activeEmitter = smallExhaust
+                mouse_setPosition(vec2(int(activeEmitter.physics.location.x), int(activeEmitter.physics.location.y)))
+
+              of KeyCode.Num7:
                 activeEmitter = nil # The mouse controls nothing
               of KeyCode.F:
                 # Summon comets to the screen up to a limit
