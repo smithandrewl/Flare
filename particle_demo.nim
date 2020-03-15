@@ -1,6 +1,5 @@
 import csfml, flare, mersenne, sequtils, math, times, stock_emitters
 
-discard GC_disable
 
 const
   WINDOW_TITLE     = "Flare Particle FX Demo"

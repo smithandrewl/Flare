@@ -30,6 +30,8 @@ proc draw*(emitter: Emitter, render: RenderWindow) =
     particle.draw render
 
 proc update*(emitter: Emitter) =
+  var killList: seq[int] = @[]
+
   ## Update each of the active particles emitted by `emitter`.
   if emitter.life != nil:
     emitter.life.update
@@ -41,8 +43,13 @@ proc update*(emitter: Emitter) =
 
     if particle.life.IsAlive != true:
       emitter.pool.ret(particle)
-      emitter.particles.delete(i)
+      killList.add(i)
+      #emitter.particles.delete(i)
       dec(emitter.curParticles)
+  for i in killList:
+    emitter.particles.delete(i)
+  
+
 
   if emitter.curParticles < emitter.maxParticles:
     for i in 1..min(50, emitter.maxParticles - emitter.curParticles):
